@@ -45,10 +45,13 @@ export default class Sidebar extends Component {
 		return (
 			<Layout.Drawer js={false} class={this.visible?'is-visible':null}>
 				<Button class="menu" icon onClick={this.close}><Icon icon="menu" /></Button>
-				<Layout.Title>{ displayName || ' ' }</Layout.Title>
+				<Layout.Title>
+					<Link href="/profile" route={route}>{ displayName || ' ' }</Link>
+				</Layout.Title>
 				<Navigation>
 					<Link href="/" route={route}>Home</Link>
-					<Link href="/profile" route={route}>Profile</Link>
+					<Link href="/explore" route={route}>Explore</Link>
+					<Link href="/profile" route={route}>My Profile</Link>
 					<Link href="/stream" route={route}>Stream</Link>
 					<Link href="/settings" route={route}>Settings</Link>
 				</Navigation>

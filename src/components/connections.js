@@ -5,8 +5,9 @@ import Post from './post';
 import peach from '../peach';
 import { emit } from '../pubsub';
 
-export default class Explore extends Component {
+export class Connections extends Component {
 	counter = 0;
+	explore = false;
 
 	componentDidMount() {
 		if (!this.lastUpdate || (Date.now()-this.lastUpdate)>30000) {
@@ -16,9 +17,11 @@ export default class Explore extends Component {
 
 	@bind
 	update() {
-		let id = ++this.counter;
+		let id = ++this.counter,
+			fn = this.explore ? peach.connections.explore : peach.connections;
 		this.lastUpdate = Date.now();
-		peach.connections.explore( (error, { connections }) => {
+
+		fn( (error, { connections }) => {
 			if (id!==this.counter) return;
 
 			if (connections) {
@@ -47,8 +50,8 @@ export default class Explore extends Component {
 								<Card.TitleText>{ displayName } ({ unreadPostCount })</Card.TitleText>
 							</Card.Title>
 							<Card.Text>
-								{ posts[0] ? (
-									<Post {...posts[0]} />
+								{ posts.length ? (
+									<Post {...posts[posts.length-1]} />
 								) : null }
 							</Card.Text>
 						</Card>
@@ -57,4 +60,9 @@ export default class Explore extends Component {
 			</div>
 		);
 	}
+}
+
+
+export class ExploreConnections extends Connections {
+	explore = true;
 }

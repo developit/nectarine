@@ -134,7 +134,7 @@ export default class Profile extends Component {
 
 				<div class="posts">
 					<div class="posts-inner">{
-						(stream.posts || []).map( post => <Post {...post} /> )
+						(stream.posts || []).slice().reverse().map( post => <Post {...post} /> )
 					}</div>
 				</div>
 			</div>

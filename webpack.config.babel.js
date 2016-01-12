@@ -44,8 +44,12 @@ module.exports = {
 		new webpack.optimize.DedupePlugin(),
 		new HtmlWebpackPlugin({
 			template: 'src/index.html',
-			config: { title:'Peach' },
-			minify: { collapseWhitespace: true }
+			minify: { collapseWhitespace: true },
+			title: 'Peach',
+			themeColor: '#673AB7',
+			manifest: '/assets/manifest.json',
+			favicon: 'src/assets/favicon.ico',
+			icon: '/assets/icon-300.png'
 		})
 	]).concat(process.env.NODE_ENV==='production' ? [
 		new webpack.DefinePlugin({

@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import { Icon } from 'preact-mdl';
 import parseMessageText from 'parse-message';
 import { bind } from 'decko';
 import { emit } from '../pubsub';
@@ -14,6 +15,25 @@ const RENDERERS = {
 	video: props => (<VideoPlayer {...props} />),
 
 	text: ({ text }) => (<p>{ parseMessageText(text) || ' ' }</p>),
+
+	comment: ({ commentBody, postMessage, authorStream, postID }) => (
+		<div class="comment-block">
+			{ renderItem(postMessage[0]) }
+			<div class="comment">
+				{ RENDERERS.text({ text:commentBody }) }
+				<author>{ authorStream.displayName }</author>
+			</div>
+		</div>
+	),
+
+	like: ({ postMessage, authorStream, postID }) => (
+		<div class="like-block">
+			{ renderItem(postMessage[0]) }
+			<div class="like">
+				{ authorStream.displayName } liked this
+			</div>
+		</div>
+	),
 
 	link: ({ title, description, url, imageURL }) => (
 		<div class="item-link">
@@ -34,6 +54,16 @@ const RENDERERS = {
 };
 
 
+const renderItem = item => {
+	let fn = RENDERERS[String(item.type).toLowerCase()];
+	if (!fn) {
+		console.warn(`Unknown type: ${item.type}`, item);
+		return null;
+	}
+	return <div class={'item item-'+item.type}>{ fn(item) }</div>;
+};
+
+
 export default class Post extends Component {
 	// shouldComponentUpdate({ id }) {
 	// 	return id!==this.props.id;
@@ -48,29 +78,38 @@ export default class Post extends Component {
 		}
 	}
 
-	@bind
-	renderItem(item) {
-		let fn = RENDERERS[String(item.type).toLowerCase()];
-		if (!fn) {
-			console.warn(`Unknown type: ${item.type}`, item);
-			return null;
-		}
-		return <div class={'item item-'+item.type}>{ fn(item) }</div>;
-	}
-
 	render({ type, body, message, createdTime }) {
 		let author = body && body.authorStream,
 			avatar = author && author.avatarSrc;
-		if (!message || !message[0] && body) {
-			message = [{ type:'text', text:body.message }];
+		if (!message || !message[0]) {
+			message = body && body.message || body;
 		}
+		if (!message) message = [];
+		if (!Array.isArray(message)) {
+			message = [message];
+		}
+		for (let i=message.length; i--; ) {
+			if (typeof message[i]==='string') {
+				message[i] = { type:'text', text:message[i] };
+			}
+			if (!message[i].type) {
+				message[i].type = type;
+			}
+		}
+		// console.log(message[0]);
+		// if (!message || !message[0] && body) {
+		// 	message = [{
+		// 		type: 'text',
+		// 		text: body.message || body.postMessage
+		// 	}];
+		// }
 		return (
 			<div class={'post type-'+type}>
 				{ author ? (
 					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
 				) : null }
 				<div class="items">{
-					message.map(this.renderItem)
+					message.map(renderItem)
 				}</div>
 			</div>
 		);

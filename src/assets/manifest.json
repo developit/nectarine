@@ -1,0 +1,25 @@
+{
+	"name": "Peach",
+	"short_name": "Peach",
+	"icons": [
+		{
+			"src": "/assets/icon-256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/assets/icon-128.png",
+			"sizes": "128x128",
+			"type": "image/png"
+		}
+	],
+	"start_url": "/",
+	"display": "standalone",
+	"theme_color": "#673AB7",
+	"background_color": "#F4F4F4"
+}

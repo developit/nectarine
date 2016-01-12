@@ -3,7 +3,7 @@ import { Layout, Button, Icon } from 'preact-mdl';
 import Router, { route } from 'preact-router';
 import { bind } from 'decko';
 import Stream from './stream';
-import Explore from './explore';
+import { Connections, ExploreConnections } from './connections';
 import Profile from './profile';
 import Notifications from './notifications';
 import Settings from './settings';
@@ -39,7 +39,8 @@ export default class App extends Component {
 		return (
 			<Layout.Content id="content">
 				<Router onChange={::this.onRoute}>
-					<Explore path="/" />
+					<Connections path="/" />
+					<ExploreConnections path="/explore" />
 					<Stream path="/stream" />
 					<Profile path="/profile" id="me" />
 					<Profile path="/profile/:id" />
