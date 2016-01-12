@@ -109,22 +109,22 @@ export default class Profile extends Component {
 							{ isMe ? (
 								<span class="tag is-you">You!</span>
 							) : (
-								<Button icon onClick={this.wave}>
+								<Button icon primary onClick={this.wave}>
 									<Icon icon="mood" title="Wave" />
 								</Button>
 							) }
 							{ !isMe && stream.followsYou ? (
-								<Button icon onClick={this.followsYou}>
+								<Button icon primary onClick={this.followsYou}>
 									<Icon class="follows-you" icon="people" title="Follows You" />
 								</Button>
 							) : null }
 							{ stream.isPublic ? null : (
-								<Button icon onClick={this.private}>
+								<Button icon primary onClick={this.private}>
 									<Icon class="private" icon="lock" title="Private" />
 								</Button>
 							) }
 							{ stream.youFollow ? (
-								<Button accent class="unfollow" onClick={this.unfollow}>Unfollow</Button>
+								<Button primary class="unfollow" onClick={this.unfollow}>Unfollow</Button>
 							) : (
 								<Button primary class="follow" onClick={this.follow}>Follow</Button>
 							) }
