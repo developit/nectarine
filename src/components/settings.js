@@ -48,6 +48,11 @@ export default class Settings extends Component {
 		this.setState({ loading: true });
 		peach[n]({ [what]: v }, error => {
 			this.setState({ loading: false, error });
+			if (!error) {
+				let { profile={} } = peach.store.getState();
+				profile[what] = v;
+				peach.store.setState({ profile });
+			}
 		});
 	}
 

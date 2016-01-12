@@ -6,13 +6,21 @@ import peach from '../peach';
 import { emit } from '../pubsub';
 
 export default class Explore extends Component {
+	counter = 0;
+
 	componentDidMount() {
-		this.update();
+		if (!this.lastUpdate || (Date.now()-this.lastUpdate)>30000) {
+			this.update();
+		}
 	}
 
 	@bind
 	update() {
+		let id = ++this.counter;
+		this.lastUpdate = Date.now();
 		peach.connections.explore( (error, { connections }) => {
+			if (id!==this.counter) return;
+
 			if (connections) {
 				let { streamCache } = peach.store.getState();
 				connections.forEach( stream => {
