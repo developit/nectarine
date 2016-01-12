@@ -1,0 +1,60 @@
+.pin() {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+}
+
+.fill() {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.modal() {
+	.fill();
+	position: fixed;
+	top: 100%;
+	background: #F4F4F4;
+	// overflow: auto;
+	// overflow-scrolling: touch;
+	transform: translateY(20%);
+	will-change: transform;
+	transition: transform 300ms ease;
+	z-index: 900;
+
+	&[showing], &.showing {
+		transform: translateY(-100%);
+	}
+
+	.mdl-layout__header {
+		display: block;
+	}
+}
+
+.scroller() {
+	overflow: auto;
+	overflow-scrolling: touch;
+
+	& > .inner {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		overflow: visible;
+	}
+}
+
+.spin() {
+	will-change: transform;
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,160 @@
+@import 'mdl';
+@import 'scroll-list';
+@import 'profile';
+@import 'helpers';
+
+html, body, #app {
+	height: 100%;
+	background: #F4F4F4;
+	overflow: hidden;
+}
+
+button, a {
+	outline: none;
+	tap-highlight-color: rgba(0,0,0,0);
+}
+
+a {
+	cursor: pointer;
+}
+
+.loading {
+	.fill();
+
+	.mdl-spinner {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin: -14px 0 0 -15px;
+	}
+}
+
+.explore {
+	.fill();
+	.scroller();
+
+	.stream-connection {
+		min-height: 100px;
+
+		.mdl-card__title .avatar {
+			float: left;
+			width: 40px;
+			height: 40px;
+			margin: 0 10px -5px 0;
+			background-position: center;
+			background-size: cover;
+			background-repeat: no-repeat;
+			border-radius: 50%;
+		}
+
+		.post {
+			border-radius: 0;
+			margin: 0;
+			box-shadow: none;
+			&:not(:first-child) {
+				border-top: 1px solid #DDD;
+			}
+		}
+	}
+}
+
+.mdl-layout__drawer {
+	&, & ~ * {
+		transition: all 300ms ease;
+	}
+	&.is-visible ~ * {
+		transform: translateX(240px/2);
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	.mdl-button.menu {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+		z-index: 2;
+	}
+}
+
+.create.modal {
+	.modal();
+	// background: #FFF;
+
+	.content {
+		.pin();
+		// .scroller();
+		top: 56px;
+	}
+
+	.error {
+		position: absolute;
+		bottom: 20px;
+		left: 10px;
+		right: 10px;
+		animation: out 1s forwards 1 2s;
+		z-index: 10;
+
+		@keyframes out {
+			0% { bottom:20px; opacity:1; }
+			100% { bottom:-50px; opacity:0; }
+		}
+	}
+
+	.text {
+		display: block;
+		box-sizing: padding-box;
+		width: auto;
+		position: absolute;
+		left: 10px;
+		right: 10px;
+		top: 10px;
+		bottom: 0;
+		margin: 0;
+		padding: 0 0 20px;
+		// margin: 20px 10px 0;
+
+		& > textarea {
+			box-sizing: border-box;
+			width: 100%;
+			height: 100%;
+			padding: 10px;
+			background: #FFF;
+			resize: none;
+		}
+	}
+
+	button-bar {
+		// position: absolute;
+		// left: 0;
+		// bottom: 0;
+		// width: 100%;
+		text-align: center;
+	}
+}
+
+.error {
+	display: none;
+	margin: 5px;
+	padding: 10px;
+	background: #f2efe5;
+	border: 1px solid #ddd5c0;
+	border-radius: 3px;
+	color: #888;
+	font-size: 120%;
+	text-align: center;
+
+	&.showing {
+		display: block;
+	}
+}
+
+
+#login {
+	form {
+		flex: 1;
+		text-align: center;
+		padding: 20px;
+		max-width: 400px;
+		margin: auto;
+	}
+}

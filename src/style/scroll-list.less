@@ -1,0 +1,85 @@
+.scroll-list {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	overflow: hidden;
+
+	& > li {
+		padding: 0;
+		margin: 0;
+	}
+
+	& > li > a,
+	.scroll-list-item {
+		// .tap-region;
+		// .tap-region-dark;
+		display: block;
+		padding: 15px;
+		margin: 0;
+		background: #FFF;
+		border: none;
+		border-bottom: 1px solid #EEE;
+		color: #333;
+		font-size: 16px;
+		text-decoration: none;
+		overflow: hidden;
+
+		i {
+			display: inline-block;
+			float: left;
+			padding: 0 10px 0 0;
+			line-height: 100%;
+		}
+
+		h4 {
+			font-weight: 600;
+			font-size: 120%;
+			margin: 0;
+			padding: 3px;
+			overflow: hidden;
+		}
+
+		h5 {
+			font-weight: 300;
+			font-size: 100%;
+			margin: 0;
+			padding: 3px;
+			color: #888;
+			overflow: hidden;
+		}
+
+		.avatar {
+			display: inline-block;
+			float: left;
+			width: 64px;
+			height: 64px;
+			padding: 0;
+			margin: 0 10px 0 0;
+			background-color: #EEE;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			border-radius: 50%;
+		}
+
+		button-bar, .right {
+			float: right;
+		}
+
+		.badge {
+			position: absolute;
+			right: 15px;
+			top: 15px;
+			width: 1.4em;
+			height: 1.4em;
+			padding: 3px;
+			background: #AAA;
+			border: none;
+			border-radius: 50%;
+			color: #FFF;
+			line-height: 1.4em;
+			font-size: 70%;
+			text-align: center;
+		}
+	}
+}

@@ -1,0 +1,106 @@
+@import (css) '//storage.googleapis.com/code.getmdl.io/1.0.6/material.deep_purple-pink.min.css';
+@import (css) '//fonts.googleapis.com/icon?family=Material+Icons';
+@import (css) '//fonts.googleapis.com/css?family=Roboto:300,400,500,700';
+
+html, body {
+	font: 14px/1.21 Roboto, 'Helvetica Neue', arial, sans-serif;
+}
+
+
+header {
+	&.seamless {
+		box-shadow: 0 0 0 #000;
+	}
+}
+
+#content {
+	position: relative;
+}
+
+#app > .view {
+	// &.hero-bg {
+	// 	background: #596066 url('/assets/background.jpg') no-repeat center / cover;
+	// }
+
+	&.seamless {
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 60px;
+			background: #607D8B;
+			box-shadow: 0 1px 1px -1px #FFF;
+		}
+	}
+}
+
+
+.mdl-card {
+	&.centered {
+		display: block;
+		width: auto;
+		max-width: 600px;
+		margin: 20px auto;
+
+		@media (max-width:640px) {
+			margin: 20px;
+		}
+
+		&.wide {
+			max-width: 800px;
+		}
+	}
+
+	&.has-image {
+		.mdl-card__title {
+			height: 176px;
+			background: url(http://www.getmdl.io/templates/blog/images/coffee.jpg) center / cover;
+
+			.mdl-card__title-text {
+				color: #FFF;
+				font-size: 300%;
+				text-shadow: 0 0 1px #000, 0 0 5px rgba(0,0,0,0.3);
+			}
+		}
+	}
+}
+
+
+.floating-action-button {
+	position: fixed;
+	right: 14px;
+	bottom: 14px;
+	z-index: 500;
+	will-change: bottom;
+	transition: bottom 250ms ease 50ms;
+
+	&.is-hidden {
+		bottom: -100px;
+	}
+}
+
+
+.mdl-layout__header[manual],
+.mdl-layout__header--manual {
+	.mdl-layout__header-row {
+		& > .mdl-button:first-child,
+		& > .material-icons:first-child {
+			left: -10px;
+			margin-left: -50px;
+		}
+	}
+}
+
+
+form {
+	margin: 20px;
+}
+
+button-bar,
+.mdl-card__actions.centered {
+	display: block;
+	padding: 10px;
+	text-align: center;
+}

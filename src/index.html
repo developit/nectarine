@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html{% if(o.htmlWebpackPlugin.files.manifest) { %} manifest="{%= o.htmlWebpackPlugin.files.manifest %}"{% } %}>
+	<head>
+		<meta charset="utf-8">
+		<title>{%=o.htmlWebpackPlugin.options.config.title%}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		{% if (o.htmlWebpackPlugin.files.manifest) { %}
+		<link rel="manifest" href="{%=o.htmlWebpackPlugin.files.manifest%}">
+		{% } %}
+		{% if (o.htmlWebpackPlugin.options.themeColor) { %}
+		<meta name="theme-color" content="{%=o.htmlWebpackPlugin.options.themeColor%}">
+		{% } %}
+		{% if (o.htmlWebpackPlugin.files.favicon) { %}
+		<link rel="shortcut icon" href="{%=o.htmlWebpackPlugin.files.favicon%}">
+		{% } %}
+		{% if (o.htmlWebpackPlugin.files.icon) { %}
+		<link rel="icon" sizes="192x192" href="{%=o.htmlWebpackPlugin.files.icon%}">
+		{% } %}
+		{% for (var css in o.htmlWebpackPlugin.files.css) { %}
+		<link href="{%=o.htmlWebpackPlugin.files.css[css] %}" rel="stylesheet">
+		{% } %}
+	</head>
+	<body>
+		{% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
+		<script src="{%=o.htmlWebpackPlugin.files.chunks[chunk].entry %}"></script>
+		{% } %}
+	</body>
+</html>
