@@ -22,7 +22,7 @@ export default class Sidebar extends Component {
 	}
 
 	@bind
-	fromState({ profile:{ displayName } }) {
+	fromState({ profile:{ displayName }={} }={}) {
 		if (displayName!==this.state.displayName) {
 			this.setState({ displayName });
 		}

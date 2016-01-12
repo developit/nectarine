@@ -8,7 +8,8 @@
     "build": "NODE_ENV=production webpack -p",
     "prestart": "npm run build -s",
     "start": "http-server build",
-    "deploy": "gh-pages -d build"
+    "deploy-old": "gh-pages -d build",
+    "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d $(cat CNAME)"
   },
   "author": "Jason Miller <jason@developit.ca>",
   "license": "ISC",
@@ -32,6 +33,7 @@
     "less-loader": "^2.2.2",
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.0",
+    "surge": "^0.17.4",
     "webpack": "^1.12.10",
     "webpack-dev-server": "^1.14.0"
   }

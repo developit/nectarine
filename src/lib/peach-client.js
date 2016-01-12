@@ -15,6 +15,9 @@ export default ({ url=URL, store, init=true }={}) => {
 		peach = new Emitter();
 
 	if (!store) store = new Store('peach-client');
+	if (!store.getState().streamCache) {
+		store.setState({ streamCache:{} });
+	}
 
 	peach.api = api;
 	peach.url = url;
