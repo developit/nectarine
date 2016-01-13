@@ -3,7 +3,13 @@ import peachClient from 'peach-client';
 
 let url = 'https://cors-anywhere.herokuapp.com/v1.peachapi.com:443';
 
-let peach = peachClient({ url, store, init:false });;
+let peach = peachClient({
+	url,
+	store,
+	imgurKey: '92e78601cb60df3',
+	init: false
+});
+
 window.peach = peach;
 export default peach;
 

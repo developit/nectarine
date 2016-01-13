@@ -10,7 +10,7 @@ const URL = '/api';		// 'https://v1.peachapi.com'
 
 const CACHE_LIFETIME = 60 * 1000;
 
-export default ({ url=URL, store, init=true }={}) => {
+export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	let api = jan.ns(url),
 		peach = new Emitter();
 
@@ -113,6 +113,9 @@ export default ({ url=URL, store, init=true }={}) => {
 				let credentials = req.originalBody,
 					root = { id:data.id, token:data.token };		// no clue what this is for yet
 				store.setState({ id, token, ...credentials });
+
+				// since we just logged in, fetch the user's profile:
+				peach.user.me(EMPTY_FUNC, false);
 			}
 		}
 
@@ -160,7 +163,7 @@ export default ({ url=URL, store, init=true }={}) => {
 	peach.user = {};
 
 	/** Fetch the stream for a given user (by id) */
-	peach.user.stream = (id, callback) => {
+	peach.user.stream = (id, callback=EMPTY_FUNC) => {
 		let { streamCache } = store.getState();
 		if (id==='me') id = store.getState().id;
 		let cached = streamCache && streamCache[id];
@@ -188,9 +191,9 @@ export default ({ url=URL, store, init=true }={}) => {
 		});
 	};
 
-	peach.user.me = callback => {
+	peach.user.me = (callback=EMPTY_FUNC, cache=true) => {
 		let { id, profile } = store.getState();
-		if (profile) return callback(null, profile);
+		if (profile && cache!==false) return callback(null, profile);
 		peach.user.stream(id, (err, profile) => {
 			if (profile) store.setState({ profile });
 			callback(err, profile);
@@ -208,10 +211,17 @@ export default ({ url=URL, store, init=true }={}) => {
 	};
 
 	/** Like a post */
-	peach.like = (postId, callback) => api.post('/like', { postId }, cb(callback));
+	peach.like = (postId, callback) => api.post({ url:'/like', body:{ postId } }, cb(callback));
 
 	/** Un-like a post */
-	peach.unlike = (postId, callback) => api.delete(`/like/postID/${id}`, cb(callback));
+	peach.unlike = (postId, callback) => api.delete(`/like/postID/${postId}`, cb(callback));
+
+	/** Add a comment to a post.
+	 *	@param {Object} comment
+	 *	@param {String} comment.postId	ID of the post to comment on
+	 *	@param {String} body			The comment message text
+	 */
+	peach.comment = method('post', '/comment');
 
 	/** Set your stream visibility */
 	peach.setVisibility = method('post', '/stream/visibility');
@@ -224,6 +234,40 @@ export default ({ url=URL, store, init=true }={}) => {
 
 	/** Set your display name. Pass {displayName:"foo"} */
 	peach.setDisplayName = method('put', '/stream/displayName');
+
+	/** Set your avatar URL. Pass {avatarSrc:"http://..."} */
+	//peach.setAvatar = method('put', '/stream/avatarSrc');
+	peach.setAvatar = (avatarSrc, callback=EMPTY_FUNC) => {
+		api.put({ url:'/stream/avatarSrc', body:{ avatarSrc } }, (err, res, data={}) => {
+			callback(err, err ? null : { avatarSrc, ...data });
+		});
+	};
+
+	peach.uploadAvatar = (image, callback=EMPTY_FUNC) => {
+		// if (window.File && image instanceof window.File) {
+		// 	console.log('detected avatar file, reading');
+		// 	let fr = new FileReader();
+		// 	fr.onload = () => peach.uploadAvatar(fr.result, callback);
+		// 	fr.readAsDataURL(image);
+		// 	return;
+		// }
+		console.log('avatar is a data URI, uploading to imgur');
+		let body = new FormData();
+		body.append('type', 'file');
+		body.append('image', image);
+		jan.post({
+			url: 'https://api.imgur.com/3/image',
+			headers: { Authorization: `Client-ID ${imgurKey}` },
+			body
+		}, (err, res, data) => {
+			data = data && data.data || data;
+			if (!err && !data) err = 'Invalid response';
+			if (err) return callback(err);
+			let url = data.link || `http://i.imgur.com/${data.id}.png`;
+			console.log('upload callback: ', { err, res, data });
+			peach.setAvatar(url, callback);
+		});
+	};
 
 	// peach.setName = (name, callback) => api.post({ url:'/stream/name', body:{ name } }, cb(callback));
 	// peach.setDisplayName = (displayName, callback) => api.post({ url:`/stream/id/${store.getState().id}/displayName`, body:{ displayName } }, cb(callback));

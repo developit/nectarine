@@ -780,7 +780,7 @@ export class TextField extends MaterialComponent {
 		);
 		if (props.multiline) {
 			field.children[0].nodeName = 'textarea';
-			field.children[0].children = [props.value];
+			// field.children[0].children = [props.value];
 		}
 		if (props.expandable===true) {
 			field.class = 'mdl-textfield__expandable-holder';

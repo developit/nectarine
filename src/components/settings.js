@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Card, TextField, Button, Icon, Spinner, CheckBox } from 'preact-mdl';
 import { bind } from 'decko';
 import peach from '../peach';
+import chooseFiles from 'choose-files';
 
 export default class Settings extends Component {
 	componentDidMount() {
@@ -15,9 +16,9 @@ export default class Settings extends Component {
 		// 	this.setState({ visibility });
 		// });
 		this.setState({ loading: true });
-		peach.user.me((error, { name, displayName, isPublic }) => {
+		peach.user.me( (error, { name, displayName, avatarSrc, isPublic }) => {
 			let visibility = { friendsOnly: isPublic };
-			this.setState({ loading:false, error, visibility, name, displayName });
+			this.setState({ loading:false, error, visibility, name, displayName, avatarSrc });
 		});
 	}
 
@@ -49,27 +50,45 @@ export default class Settings extends Component {
 		peach[n]({ [what]: v }, error => {
 			this.setState({ loading: false, error });
 			if (!error) {
-				let { profile={} } = peach.store.getState();
-				profile[what] = v;
-				peach.store.setState({ profile });
+				this.updateLocalProfile({ [what]: v });
 			}
 		});
 	}
 
-	render({}, { loading, error, visibility={}, name, displayName }) {
+	updateLocalProfile(state) {
+		peach.store.setState({
+			profile: { ...peach.store.getState().profile || {}, ...state }
+		});
+	}
+
+	@bind
+	changeAvatar() {
+		chooseFiles( files => {
+			if (!files || !files[0]) return;
+			this.setState({ loading:true });
+			peach.uploadAvatar(files[0], (error, { avatarSrc }={}) => {
+				this.setState({ loading:false, error });
+				console.log({ error, avatarSrc });
+				if (!error && avatarSrc) {
+					this.updateLocalProfile({ avatarSrc });
+					this.setState({ avatarSrc });
+				}
+			});
+		});
+	}
+
+	render({}, { loading, error, visibility={}, name, displayName, avatarSrc }) {
 		return (
-			<div class="profile">
+			<div class="settings">
 				<Card shadow="2" class="centered has-image">
-					<div style="position:absolute;right:0;top:0">{ loading ? <Spinner /> : null }</div>
+					<div style="position:absolute;right:10px;top:10px;">{ loading ? <Spinner /> : null }</div>
 
 					<Card.Title>
 						<Card.TitleText>Settings</Card.TitleText>
 					</Card.Title>
 
 					<Card.Text>
-						{ error ? (
-							<div class="error showing">{ error }</div>
-						) : null }
+						<div class={{error:1, showing:error}}>{ error || ' ' }</div>
 
 						<form action="javascript:">
 							<CheckBox checked={visibility.friendsOnly} onChange={this.setVisibility}>Visible to Friends Only</CheckBox>
@@ -91,6 +110,12 @@ export default class Settings extends Component {
 								value={name}
 								onInput={this.linkState('name')} />
 							<Button colored raised onClick={this.setName}>Set Name</Button>
+						</form>
+
+						<form action="javascript:">
+							<h6>Avatar</h6>
+							<div class="avatar" onClick={this.changeAvatar} style={`background-image: url("${avatarSrc || '/assets/icon-300.png'}");`} />
+							<Button colored raised onClick={this.changeAvatar}>Change</Button>
 						</form>
 					</Card.Text>
 				</Card>

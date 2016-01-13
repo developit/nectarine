@@ -30,18 +30,22 @@ export default class Settings extends Component {
 	render({}, { error, inboundFriendRequests=[], outboundFriendRequests=[] }) {
 		return (
 			<div class="notifications">
-				<div class="scroll-list">{
-					inboundFriendRequests.map( ({ id, stream }) => (
-						<div class="scroll-list-item">
-							<div class="avatar" style={`background-image: url(${stream.avatarSrc});`} />
-							<button-bar>
-								<Button icon accent ripple onClick={()=>this.acceptFriendRequest(id)}><Icon icon="check" /></Button>
-							</button-bar>
-							<h4>{ stream.displayName }</h4>
-							<h5>@{ stream.name }</h5>
-						</div>
-					))
-				}</div>
+				{ inboundFriendRequests.length ? (
+					<div class="scroll-list">{
+						inboundFriendRequests.map( ({ id, stream }) => (
+							<div class="scroll-list-item">
+								<div class="avatar" style={`background-image: url(${stream.avatarSrc});`} />
+								<button-bar>
+									<Button icon accent ripple onClick={()=>this.acceptFriendRequest(id)}><Icon icon="check" /></Button>
+								</button-bar>
+								<h4>{ stream.displayName }</h4>
+								<h5>@{ stream.name }</h5>
+							</div>
+						))
+					}</div>
+				) : (
+					<p class="nothing">Nothing to do here!</p>
+				) }
 			</div>
 		);
 	}

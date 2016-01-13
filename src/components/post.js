@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
-import { Icon } from 'preact-mdl';
+import { TextField, Button, Icon } from 'preact-mdl';
 import parseMessageText from 'parse-message';
+import neatime from 'neatime';
 import { bind } from 'decko';
 import { emit } from '../pubsub';
 
@@ -16,12 +17,12 @@ const RENDERERS = {
 
 	text: ({ text }) => (<p>{ parseMessageText(text) || ' ' }</p>),
 
-	comment: ({ commentBody, postMessage, authorStream, postID }) => (
+	comment: ({ commentBody, postMessage, author, authorStream, postID }) => (
 		<div class="comment-block">
-			{ renderItem(postMessage[0]) }
+			{ renderItem(postMessage && postMessage[0] || EMPTY) }
 			<div class="comment">
 				{ RENDERERS.text({ text:commentBody }) }
-				<author>{ authorStream.displayName }</author>
+				<author>{ (author || authorStream || EMPTY).displayName || null }</author>
 			</div>
 		</div>
 	),
@@ -57,30 +58,103 @@ const RENDERERS = {
 const renderItem = item => {
 	let fn = RENDERERS[String(item.type).toLowerCase()];
 	if (!fn) {
-		console.warn(`Unknown type: ${item.type}`, item);
+		if (Object.keys(item).length>0) {
+			console.warn(`Unknown type: ${item.type}`, item);
+		}
 		return null;
 	}
 	return <div class={'item item-'+item.type}>{ fn(item) }</div>;
 };
 
 
-export default class Post extends Component {
-	// shouldComponentUpdate({ id }) {
-	// 	return id!==this.props.id;
-	// }
 
+const noBubble = e => {
+	if (e) e.stopPropagation();
+};
+
+
+
+export default class Post extends Component {
 	@bind
-	goAuthor() {
+	goAuthor(e) {
 		let { author, body } = this.props,
-			id = (author && author.id) || (body && body.authorStream && body.authorStream.id);
+			inlineAuthor = e && e.target && e.target.getAttribute('data-author-id'),
+			id = inlineAuthor || (author && author.id) || (body && body.authorStream && body.authorStream.id);
 		if (id) {
 			emit('go', { url:`/profile/${encodeURIComponent(id)}` });
 		}
+		noBubble(e);
 	}
 
-	render({ type, body, message, createdTime }) {
+	isLiked() {
+		let { id, likedByMe } = this.props,
+			{ localLikes } = peach.store.getState();
+		return localLikes && localLikes.hasOwnProperty(id) ? localLikes[id] : likedByMe || false;
+	}
+
+	likeCount() {
+		let { id, likeCount, likedByMe } = this.props,
+			{ localLikes } = peach.store.getState();
+		return (likeCount || 0) + (localLikes && localLikes[id]===true && likedByMe!==true ? 1 : 0);
+	}
+
+	@bind
+	toggleLike(e) {
+		let liked = !this.isLiked(),
+			{ id } = this.props,
+			{ localLikes={} } = peach.store.getState();
+		localLikes[id] = liked;
+		peach.store.setState({ localLikes });
+		//LOCAL_LIKES[id] = liked;
+		this.setState({ liked });
+		peach[liked?'like':'unlike'](id, err => {
+			if (err) alert(`Error: ${err}`);
+		});
+		noBubble(e);
+	}
+
+	@bind
+	renderInlineComment({ author, body }) {
+		let avatar = author.avatarSrc;
+		return (
+			<div class="comment">
+				<div class="avatar" data-author-id={author.id} onClick={this.goAuthor} style={avatar ? `background-image: url(${avatar});` : null} />
+				{ RENDERERS.text({ text:body }) }
+				<author>{ author.displayName }</author>
+			</div>
+		);
+	}
+
+	@bind
+	comment(e) {
+		if (e && e.keyCode && e.keyCode!==13) return;
+		let { newComment, comments=[] } = this.state,
+			author = peach.store.getState().profile || {};
+		if (newComment) {
+			// comments.push({ author, body:newComment });
+			// this.setState({ newComment: '', comments });
+			peach.comment({
+				postId: this.props.id,
+				body: newComment
+			}, (err, comment) => {
+				if (err) return alert(`Error: ${err}`);
+				comments.push(comment);
+				this.setState({ newComment: '', comments });
+			});
+		}
+		e.preventDefault();
+		return false;
+	}
+
+	render({ id, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
 		let author = body && body.authorStream,
-			avatar = author && author.avatarSrc;
+			avatar = author && author.avatarSrc,
+			isLiked = this.isLiked(),
+			likeCount = this.likeCount();
+		if (stateComments) {
+			let commentIds = comments.map( c => c.id );
+			comments = comments.concat(stateComments.filter( c => commentIds.indexOf(c.id)<0 ));
+		}
 		if (!message || !message[0]) {
 			message = body && body.message || body;
 		}
@@ -96,21 +170,27 @@ export default class Post extends Component {
 				message[i].type = type;
 			}
 		}
-		// console.log(message[0]);
-		// if (!message || !message[0] && body) {
-		// 	message = [{
-		// 		type: 'text',
-		// 		text: body.message || body.postMessage
-		// 	}];
-		// }
 		return (
 			<div class={'post type-'+type}>
 				{ author ? (
 					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
 				) : null }
+				<span class="post-time">{ neatime(createdTime * 1000) }</span>
+				<Button icon class="like-unlike" is-liked={isLiked || null} onClick={this.toggleLike}>
+					<Icon icon="favorite" badge={likeCount || null} />
+				</Button>
 				<div class="items">{
 					message.map(renderItem)
 				}</div>
+				<div class="comments" onClick={noBubble}>
+					{ comments && comments.length ? (
+						comments.map(this.renderInlineComment)
+					) : null }
+				</div>
+				<div class="post-new-comment" onClick={noBubble}>
+					<TextField multiline placeholder="Witty remark" value={newComment} onInput={this.linkState('newComment')} onKeyDown={this.comment} />
+					<Button icon onClick={this.comment}><Icon icon="send" /></Button>
+				</div>
 			</div>
 		);
 	}
@@ -136,29 +216,33 @@ class ImageViewer extends Component {
 
 class VideoPlayer extends Component {
 	@bind
-	play() {
+	play(e) {
 		this.setState({ play:true });
+		noBubble(e);
 	}
 
 	@bind
-	stop() {
+	stop(e) {
 		this.setState({ play:false });
+		noBubble(e);
 	}
 
 	componentDidUpdate() {
 		if (this.state.play) {
-			setTimeout(() => this.querySelector('video').play(), 100);
+			setTimeout(() => this.base.querySelector('video').play(), 100);
 		}
 	}
 
-	render({ src, poster }, { play }) {
+	render({ src, posterSrc }, { play }) {
 		return (
 			<div class="video-player">
+				<div class="poster" onClick={this.play}>
+					<img src={posterSrc} />
+					<Icon icon="play circle outline" />
+				</div>
 				{ play ? (
-					<video src={src} onPause={this.stop} autoplay autobuffer autostart />
-				) : (
-					<img src={poster} onClick={this.play} />
-				) }
+					<video src={src} onPause={this.stop} onEnd={this.stop} autoplay autobuffer autostart />
+				) : null }
 			</div>
 		);
 	}

@@ -14,7 +14,7 @@ class LoggedIn extends Component {
 	}
 	render() {
 		return (
-			<Layout fixed-header={true} fixed-drawer={true} js={false}>
+			<Layout fixed-header={true} js={false}>
 				<Create />
 				<Sidebar />
 				<Header />

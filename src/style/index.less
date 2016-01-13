@@ -5,7 +5,7 @@
 
 html, body, #app {
 	height: 100%;
-	background: #F4F4F4;
+	background: #FFF0E6;
 	overflow: hidden;
 }
 
@@ -30,17 +30,23 @@ a {
 }
 
 .comment-block,
-.like-block {
+.like-block,
+.comments {
 	.comment, .like {
-		border-left: 3px solid #CCC;
+		border-left: 3px solid #EEE;
 		margin: 5px 10px;
 		padding: 5px 10px;
+		p {
+			margin: 0;
+			font-size: 100%;
+		}
 	}
-	.author {
+	author {
 		display: block;
 		margin: 0;
-		padding: 3px 0 0;
-		color: #888;
+		padding: 0;
+		//color: #888;
+		opacity: 0.4;
 	}
 }
 
@@ -72,6 +78,141 @@ a {
 		}
 	}
 }
+
+
+.nothing {
+	padding: 50px 20px;
+	font-size: 140%;
+	color: #888;
+}
+
+
+.video-player {
+	position: relative;
+	overflow: hidden;
+	background: #000;
+	min-height: 300px;
+
+	video {
+		.fill();
+		z-index: 20;
+	}
+
+	.poster {
+		position: relative;
+		overflow: hidden;
+		//.fill();
+		// background-color: #000;
+		// background-position: center;
+		// background-size: contain;
+		// background-repeat: no-repeat;
+		cursor: pointer;
+
+		img {
+			width: 100%;
+		}
+
+		.material-icons {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 50px;
+			color: #FFF;
+			opacity: 0.5;
+			z-index: 10;
+		}
+	}
+}
+
+
+.post {
+	position: relative;
+	overflow: hidden;
+
+	p {
+		margin: 0;
+		font-size: 100%;
+	}
+
+	.items .item {
+		padding: 10px 0;
+
+		&.item-image, &.item-video {
+			&:first-child {
+				padding-top: 30px;
+			}
+		}
+
+		&.item-text {
+			padding: 10px 20px;
+			font-size: 130%;
+		}
+	}
+
+	.post-time {
+		position: absolute;
+		right: 40px;
+		top: 15px;
+		color: #AAA;
+		font-size: 70%;
+	}
+
+	.like-unlike {
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		color: #777;
+		overflow: visible;
+
+		&[is-liked] {
+			color: #FF4081;
+		}
+
+		.mdl-badge:after {
+			top: -8px;
+			right: -8px;
+			background: #BBB;
+			transform: scale(0.7);
+			transform-origin: top right;
+		}
+	}
+
+	.comments {
+		padding: 10px 0 0;
+		max-width: 420px;
+		margin: 0 auto;
+		border-top: 1px solid #DDD;
+		overflow: hidden;
+	}
+
+	.post-new-comment {
+		position: relative;
+		max-width: 400px;
+		padding: 0 10px;
+		margin: 0 auto;
+		overflow: hidden;
+
+		.mdl-textfield {
+			display: block;
+			width: auto;
+			margin: -20px 30px -20px 0;
+
+			textarea {
+				height: 50px;
+			}
+		}
+
+		.mdl-button {
+			position: absolute;
+			right: 5px;
+			top: 50%;
+			margin: -10px 0 0;
+			color: #AAA;
+		}
+	}
+}
+
 
 .mdl-layout__drawer {
 	&, & ~ * {
@@ -171,5 +312,26 @@ a {
 		padding: 20px;
 		max-width: 400px;
 		margin: auto;
+	}
+}
+
+
+
+.settings {
+	h6 {
+		color: #673AB7;
+		font-size: 12px;
+	}
+	.avatar {
+		display: inline-block;
+		vertical-align: middle;
+		width: 100px;
+		height: 100px;
+		margin: -10px 10px -10px 0;
+		background-color: #DDD;
+		background-position: center;
+		background-size: cover;
+		background-repeat: no-repeat;
+		border-radius: 50%;
 	}
 }
