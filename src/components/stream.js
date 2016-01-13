@@ -29,7 +29,7 @@ export default class Stream extends Component {
 			<div class="stream view">
 				<div class="posts">
 					<div class="posts-inner">{
-						(stream.activityItems || []).map( m => <Post {...m} /> )
+						(stream.activityItems || []).map( m => <Post minimal {...m} /> )
 					}</div>
 				</div>
 			</div>

@@ -17,6 +17,8 @@ const RENDERERS = {
 
 	text: ({ text }) => (<p>{ parseMessageText(text) || ' ' }</p>),
 
+	mention: props => RENDERERS.comment(props),
+
 	comment: ({ commentBody, postMessage, author, authorStream, postID }) => (
 		<div class="comment-block">
 			{ renderItem(postMessage && postMessage[0] || EMPTY) }
@@ -146,7 +148,7 @@ export default class Post extends Component {
 		return false;
 	}
 
-	render({ id, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
+	render({ id, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
 		let author = body && body.authorStream,
 			avatar = author && author.avatarSrc,
 			isLiked = this.isLiked(),
@@ -170,6 +172,19 @@ export default class Post extends Component {
 				message[i].type = type;
 			}
 		}
+
+		if (minimal) return (
+			<div class={'post type-'+type}>
+				{ author ? (
+					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
+				) : null }
+				<span class="post-time">{ neatime(createdTime * 1000) }</span>
+				<div class="items">{
+					message.map(renderItem)
+				}</div>
+			</div>
+		);
+
 		return (
 			<div class={'post type-'+type}>
 				{ author ? (
