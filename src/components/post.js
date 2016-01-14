@@ -48,8 +48,8 @@ const RENDERERS = {
 
 	music: props => (<MusicPlayer {...props} />),
 
-	location: ({ name, iconSrc, lat, long }) => (
-		<a href={`http://maps.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(long)}`} target="_blank" style="display:block;">
+	location: ({ name, iconSrc, lat, long, ...props }) => (
+		<a href={`https://www.google.com/maps/place/${encodeURIComponent(name)}/@${encodeURIComponent(lat)},${encodeURIComponent(long)},17z/`} target="_blank" style="display:block;">
 			{ iconSrc ? <img src={iconSrc} width="26" height="26" style="float:left; background:#CCC; border-radius:50%;" /> : null }
 			<div style="overflow:hidden; padding:5px;">{ name }</div>
 		</a>
@@ -77,6 +77,11 @@ const noBubble = e => {
 
 
 export default class Post extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { newComment: '', comments:[] };
+	}
+
 	@bind
 	goAuthor(e) {
 		let { author, body } = this.props,
@@ -118,6 +123,7 @@ export default class Post extends Component {
 	@bind
 	renderInlineComment({ author, body }) {
 		let avatar = author.avatarSrc;
+		peach.cacheStream(author);
 		return (
 			<div class="comment">
 				<div class="avatar" data-author-id={author.id} onClick={this.goAuthor} style={avatar ? `background-image: url(${avatar});` : null} />
@@ -130,25 +136,34 @@ export default class Post extends Component {
 	@bind
 	comment(e) {
 		if (e && e.keyCode && e.keyCode!==13) return;
-		let { newComment, comments=[] } = this.state,
+		let { id } = this.props,
+			{ newComment, comments=[] } = this.state,
 			author = peach.store.getState().profile || {};
 		if (newComment) {
 			// comments.push({ author, body:newComment });
 			// this.setState({ newComment: '', comments });
 			peach.comment({
-				postId: this.props.id,
+				postId: id,
 				body: newComment
 			}, (err, comment) => {
 				if (err) return alert(`Error: ${err}`);
+				comment.author = author;
 				comments.push(comment);
-				this.setState({ newComment: '', comments });
+				this.setState({ lastCommentedId: id, newComment: '', comments });
 			});
 		}
 		e.preventDefault();
 		return false;
 	}
 
-	render({ id, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
+	componentWillReceiveProps({ id }) {
+		let { lastComentedId, comments } = this.state;
+		if (id!==lastComentedId && comments && comments.length) {
+			this.setState({ lastComentedId:null, comments:[] });
+		}
+	}
+
+	render({ id, comment=true, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
 		let author = body && body.authorStream,
 			avatar = author && author.avatarSrc,
 			isLiked = this.isLiked(),
@@ -197,15 +212,19 @@ export default class Post extends Component {
 				<div class="items">{
 					message.map(renderItem)
 				}</div>
-				<div class="comments" onClick={noBubble}>
-					{ comments && comments.length ? (
-						comments.map(this.renderInlineComment)
-					) : null }
-				</div>
-				<div class="post-new-comment" onClick={noBubble}>
-					<TextField multiline placeholder="Witty remark" value={newComment} onInput={this.linkState('newComment')} onKeyDown={this.comment} />
-					<Button icon onClick={this.comment}><Icon icon="send" /></Button>
-				</div>
+				{ comment!==false ? (
+					<div class="comments" onClick={noBubble}>
+						{ comments && comments.length ? (
+							comments.map(this.renderInlineComment)
+						) : null }
+					</div>
+				) : null }
+				{ comment!==false ? (
+					<div class="post-new-comment" onClick={noBubble}>
+						<TextField multiline placeholder="Witty remark" value={newComment || ''} onInput={this.linkState('newComment')} onKeyDown={this.comment} />
+						<Button icon onClick={this.comment}><Icon icon="send" /></Button>
+					</div>
+				) : null }
 			</div>
 		);
 	}

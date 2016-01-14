@@ -48,23 +48,5 @@ export default class App extends Component {
 				) }
 			</div>
 		);
-
-		/*
-			<div id="app">
-				{ loggedin ? (
-					<main class="content has-header">
-						<Router onChange={this.onRoute}>
-							<Stream path="/stream/:id" />
-							<Profile />
-							<Settings />
-						</Router>
-					</main>
-				) : (
-					<main class="content">
-						<Login />
-					</main>
-				) }
-			</div>
-		*/
 	}
 }

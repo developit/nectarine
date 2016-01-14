@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { bind } from 'decko';
 import { Layout, TextField, Button, Icon } from 'preact-mdl';
 import peach from '../peach';
+import { emit } from '../pubsub';
 
 export default class Login extends Component {
 	state = {
@@ -12,6 +13,7 @@ export default class Login extends Component {
 		if (Object.keys(peach.store.getState()).length) {
 			this.setState({ type:'login' });
 		}
+		emit('track', this.state.type);
 	}
 
 	@bind
@@ -31,6 +33,7 @@ export default class Login extends Component {
 	@bind
 	switchMode() {
 		let type = this.state.type==='register' ? 'login' : 'register';
+		emit('track', type);
 		this.setState({ type });
 	}
 

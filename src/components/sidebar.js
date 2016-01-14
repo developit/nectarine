@@ -29,6 +29,12 @@ export default class Sidebar extends Component {
 	}
 
 	@bind
+	go(e) {
+		route(e);
+		this.close();
+	}
+
+	@bind
 	close() {
 		this.base.classList.remove('is-visible');
 		this.visible = false;
@@ -46,14 +52,14 @@ export default class Sidebar extends Component {
 			<Layout.Drawer js={false} class={this.visible?'is-visible':null}>
 				<Button class="menu" icon onClick={this.close}><Icon icon="menu" /></Button>
 				<Layout.Title>
-					<Link href="/profile" route={route}>{ displayName || ' ' }</Link>
+					<Link href="/profile" route={this.go}>{ displayName || ' ' }</Link>
 				</Layout.Title>
 				<Navigation>
-					<Link href="/" route={route}>Home</Link>
-					<Link href="/explore" route={route}>Explore</Link>
-					<Link href="/profile" route={route}>My Profile</Link>
-					<Link href="/stream" route={route}>Stream</Link>
-					<Link href="/settings" route={route}>Settings</Link>
+					<Link href="/" route={this.go}>Home</Link>
+					<Link href="/explore" route={this.go}>Explore</Link>
+					<Link href="/profile" route={this.go}>My Profile</Link>
+					<Link href="/stream" route={this.go}>Stream</Link>
+					<Link href="/settings" route={this.go}>Settings</Link>
 				</Navigation>
 			</Layout.Drawer>
 		);

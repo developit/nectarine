@@ -22,6 +22,7 @@ export default class Create extends Component {
 
 	@bind
 	open(props={}) {
+		emit('track', 'create');
 		this.setState({ open:true, ...CLEAN, ...props });
 	}
 

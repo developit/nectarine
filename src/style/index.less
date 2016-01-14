@@ -5,7 +5,7 @@
 
 html, body, #app {
 	height: 100%;
-	background: #FFF0E6;
+	background: @background;
 	overflow: hidden;
 }
 
@@ -20,6 +20,14 @@ a {
 
 .loading {
 	.fill();
+	z-index: 400;
+	&[overlay] {
+		background: @background;
+	}
+	&:not([overlay]) {
+		background: none;
+		pointer-events: none;
+	}
 
 	.mdl-spinner {
 		position: absolute;
@@ -66,6 +74,7 @@ a {
 			background-size: cover;
 			background-repeat: no-repeat;
 			border-radius: 50%;
+			cursor: pointer;
 		}
 
 		.post {
@@ -81,9 +90,12 @@ a {
 
 
 .nothing {
-	padding: 50px 20px;
+	padding: 50px 20px 20px;
 	font-size: 140%;
+	text-align: center;
+	line-height: 2em;
 	color: #888;
+	p { font-size:100%; }
 }
 
 
@@ -152,8 +164,8 @@ a {
 
 	.post-time {
 		position: absolute;
-		right: 40px;
-		top: 15px;
+		right: 55px;
+		top: 10px;
 		color: #AAA;
 		font-size: 70%;
 	}
@@ -333,5 +345,6 @@ a {
 		background-size: cover;
 		background-repeat: no-repeat;
 		border-radius: 50%;
+		cursor: pointer;
 	}
 }

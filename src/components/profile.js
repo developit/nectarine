@@ -11,43 +11,34 @@ export default class Profile extends Component {
 	}
 
 	componentWillReceiveProps({ id }) {
-		if (id!==this.props.id) this.update(id);
+		if (id!==this.state.id) this.update(id);
 	}
 
 	@bind
 	update(id=this.props.id) {
 		id = id || 'me';
-		// if (!id) return;
-		peach.user.stream(id, (error, stream) => {
-			this.setState({ error, stream });
-			// this.scrollToBottom();
+		if (this.state.loading===true && this.state.id===id) return;
+
+		let cached = peach.streamCache[id],
+			loadingNew = id!==this.state.id && !cached;
+
+		this.setState({ id, loading: true, loadingNew, stream:cached || {} });
+
+		peach.user.stream({ id, optimistic:true }, (error, stream) => {
+			this.setState({ loading:false, loadingNew:false, error, stream });
+			this.scrollToTop();
 		});
 	}
 
-	// @debounce
-	// scrollToBottom() {
-	// 	let div = this.base.querySelector('.messages');
-	// 	div.scrollTop = div.scrollHeight || 99999;
-	// }
-
-	// @bind
-	// send() {
-	// 	let { text } = this.state;
-	// 	api.sendMessage({ text }, err => {
-	// 		if (err) console.error(err);
-	// 		else {
-	// 			let { timeline } = this.state,
-	// 				from = store.data.session.user.email;
-	// 			timeline.push({ text, from });
-	// 			this.setState({ timeline, text:'' });
-	// 			this.scrollToBottom();
-	// 		}
-	// 	});
-	// }
+	@debounce
+	scrollToTop() {
+		this.base.scrollTop = 0;
+	}
 
 	@bind
-	wave() {
-		peach.wave(this.props.id, 'wave', error => {
+	wave(type) {
+		if (!type || typeof type!=='string') type = 'wave';
+		peach.wave(this.props.id, type, error => {
 			if (error) alert('Error: '+error);
 		});
 	}
@@ -76,7 +67,7 @@ export default class Profile extends Component {
 		alert('This person follows you.');
 	}
 
-	render({}, { error, stream }) {
+	render({}, { error, loading, loadingNew, stream }) {
 		if (error) return (
 			<div class="profile view">
 				<Card shadow={2} class="centered">
@@ -88,7 +79,7 @@ export default class Profile extends Component {
 			</div>
 		);
 
-		if (!stream) return (
+		if (!stream || !stream.name) return (
 			<div class="profile view">
 				<LoadingScreen />
 			</div>
@@ -137,6 +128,8 @@ export default class Profile extends Component {
 						(stream.posts || []).slice().reverse().map( post => <Post {...post} /> )
 					}</div>
 				</div>
+
+				{ loading ? <LoadingScreen overlay={false} /> : null }
 			</div>
 		);
 	}

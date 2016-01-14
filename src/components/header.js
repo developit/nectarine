@@ -29,32 +29,35 @@ export default class Header extends Component {
 		emit('menu');
 	}
 
+	@bind
+	addFriend() {
+		let name = prompt(`Friend's name:`);
+		if (!name) return;
+		peach.addFriend(name, err => {
+			if (err) alert(`Error: ${err}`);
+		});
+	}
+
 	render({ }, { inboundFriendRequests=[] }) {
 		this.inboundFriendRequests = inboundFriendRequests;
-		//console.log('render', inboundFriendRequests);
 
 		return (
 			<Layout.Header manual>
 				<Layout.HeaderRow>
 					<Button icon onClick={this.toggleMenu}><Icon icon="menu" /></Button>
 					<Layout.Title>
-						<span style="cursor:pointer" onClick={this.linkTo('/')}>Peach</span>
+						<span style="cursor:pointer" onClick={this.linkTo('/')}>Nectarine</span>
 					</Layout.Title>
 
 					<Layout.Spacer />
 
+					<Button icon onClick={this.addFriend}>
+						<Icon icon="person add" />
+					</Button>
+
 					<Button icon style="overflow:visible" onClick={this.linkTo('/notifications')}>
 						<Icon icon="notifications" badge={inboundFriendRequests.length || null} />
 					</Button>
-
-					{/*
-					<TextField
-						label="Documentation URL (JSON)"
-						type="url"
-						style="background-color:#FFF; box-shadow:0 0 0 3px #FFF; color:#000;"
-						onKeyDown={ e => e.keyCode===13 ? load(e.target.value) : null }
-						value={ docs && docs.url } />
-					*/}
 				</Layout.HeaderRow>
 			</Layout.Header>
 		);

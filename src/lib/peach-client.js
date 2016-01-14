@@ -15,13 +15,14 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 		peach = new Emitter();
 
 	if (!store) store = new Store('peach-client');
-	if (!store.getState().streamCache) {
-		store.setState({ streamCache:{} });
-	}
+	// if (!store.getState().streamCache) {
+	// 	store.setState({ streamCache:{} });
+	// }
 
 	peach.api = api;
 	peach.url = url;
 	peach.store = store;
+	peach.streamCache = {};
 
 	peach.init = callback => {
 		if (typeof callback!=='function') callback = EMPTY_FUNC;
@@ -163,11 +164,14 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.user = {};
 
 	/** Fetch the stream for a given user (by id) */
-	peach.user.stream = (id, callback=EMPTY_FUNC) => {
-		let { streamCache } = store.getState();
+	peach.user.stream = (id, callback=EMPTY_FUNC, opts={}) => {
+		if (id && typeof id==='object') {
+			opts = id;
+			id = id.id;
+		}
 		if (id==='me') id = store.getState().id;
-		let cached = streamCache && streamCache[id];
-		if (cached && streamCache.hasOwnProperty(id)) {
+		let cached = peach.streamCache[id];
+		if (!opts.optimistic && cached && peach.streamCache.hasOwnProperty(id)) {
 			if (cached && cached._fetched && (Date.now()-cached._fetched) < CACHE_LIFETIME) {
 				return callback(null, cached);
 			}
@@ -178,12 +182,10 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 				data = null;
 			}
 			if (!err && data) {
-				let { streamCache={} } = store.getState();
-				data._fetched = Date.now();
-				streamCache[id] = data;
-				store.setState({ streamCache });
+				// data._fetched = Date.now();
+				peach.cacheStream(data);
 			}
-			if (err && cached) {
+			if (err && cached && opts.fallback!==false) {
 				err = null;
 				data = cached;
 			}
@@ -200,12 +202,41 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 		});
 	};
 
+
+	let hasComments = stream => (stream && stream.posts && stream.posts.filter( p => p.hasOwnProperty('comments') ).length>0);
+
+
+	peach.cacheStream = stream => {
+		let cached = peach.streamCache[stream.id];
+		if (hasComments(cached) && !hasComments(stream)) {
+			console.warn(`ignoring cache update for ${stream.id}, no comments`);
+			return;
+		}
+		if (!stream._fetched) stream._fetched = Date.now();
+		peach.streamCache[stream.id] = stream;
+	};
+
+
 	/** Publish a text post */
 	peach.post = (post, callback) => {
 		if (typeof post==='string') post = { text:post, type:'text' };
 		api.post({ url:'/post', body:{ message:[post] } }, cb(callback));
 	};
 
+	/** Send a wave of some type to the given profile ID.
+	 *	Available `type` values:
+	 *	- `wave`
+	 *	- `ring`
+	 *	- `hundred` (100'd)
+	 *	- `cake`
+	 *	- `boop`
+	 *	- `quarantine`
+	 *	- `kiss`
+	 *	- `hiss`
+	 *	@param {String} targetStreamId	The ID of the stream to send the wave to
+	 *	@param {String} type			A valid wave type
+	 *	@param {Function} [callback]
+	 */
 	peach.wave = (targetStreamId, type, callback) => {
 		api.post({ url:'/activity/wave', body:{ targetStreamId, type } }, cb(callback));
 	};
@@ -244,14 +275,6 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	};
 
 	peach.uploadAvatar = (image, callback=EMPTY_FUNC) => {
-		// if (window.File && image instanceof window.File) {
-		// 	console.log('detected avatar file, reading');
-		// 	let fr = new FileReader();
-		// 	fr.onload = () => peach.uploadAvatar(fr.result, callback);
-		// 	fr.readAsDataURL(image);
-		// 	return;
-		// }
-		console.log('avatar is a data URI, uploading to imgur');
 		let body = new FormData();
 		body.append('type', 'file');
 		body.append('image', image);
@@ -263,8 +286,8 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 			data = data && data.data || data;
 			if (!err && !data) err = 'Invalid response';
 			if (err) return callback(err);
-			let url = data.link || `http://i.imgur.com/${data.id}.png`;
-			console.log('upload callback: ', { err, res, data });
+			let url = data.link || `https://i.imgur.com/${data.id}.png`;
+			if (typeof url==='string') url = url.replace(/^http:\/\//g, 'https://');
 			peach.setAvatar(url, callback);
 		});
 	};

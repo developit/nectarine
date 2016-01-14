@@ -29,6 +29,7 @@ export default class App extends Component {
 
 	onRoute({ url }) {
 		emit('route', { url });
+		emit('track', url);
 	}
 
 	create() {

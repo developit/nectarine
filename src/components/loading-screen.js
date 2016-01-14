@@ -2,13 +2,14 @@ import { h, Component } from 'preact';
 import { Spinner } from 'preact-mdl';
 
 export default class LoadingScreen extends Component {
-	shouldComponentUpdate() {
-		return false;
+	shouldComponentUpdate({ overlay }) {
+		return overlay !== this.overlay;
 	}
 
-	render() {
+	render({ overlay=true }) {
+		this.overlay = overlay;
 		return (
-			<div class="loading">
+			<div class="loading" overlay={overlay || null }>
 				<Spinner is-active single-color />
 			</div>
 		);
