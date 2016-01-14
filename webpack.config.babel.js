@@ -45,7 +45,7 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: 'src/index.html',
 			minify: { collapseWhitespace: true },
-			title: 'Peach',
+			title: 'Nectarine: Peach for Web / Android',
 			themeColor: '#673AB7',
 			manifest: '/assets/manifest.json',
 			favicon: 'src/assets/favicon.ico',
