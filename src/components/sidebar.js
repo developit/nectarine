@@ -46,6 +46,12 @@ export default class Sidebar extends Component {
 		this.visible = true;
 	}
 
+	@bind
+	me() {
+		peach.addFriend('developit', () => this.go('/profile/77a03b2c4fa9460ea42ff4000558c18a'))
+		return false;
+	}
+
 	render({ }, { displayName }) {
 		let { Link } = Navigation;
 		return (
@@ -60,6 +66,8 @@ export default class Sidebar extends Component {
 					<Link href="/profile" route={this.go}>My Profile</Link>
 					<Link href="/stream" route={this.go}>Stream</Link>
 					<Link href="/settings" route={this.go}>Settings</Link>
+					<div style="border-top:1px solid #DDD; margin:5px 0; height:0; padding:0; font-size:0;" />
+					<Link onClick={this.me}>App by Jason 🚀</Link>
 				</Navigation>
 			</Layout.Drawer>
 		);

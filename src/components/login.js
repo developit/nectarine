@@ -36,8 +36,8 @@ export default class Login extends Component {
 				peach.addFriend('nectarineapp', () => {
 					let callback = () => {
 						clearTimeout(timer);
-						peach.addFriend('peach', NOOP);
-						peach.addFriend('developit', NOOP);
+						// peach.addFriend('peach', NOOP);
+						// peach.addFriend('developit', NOOP);
 						emit('go', '/explore');
 					};
 					let timer = setTimeout(callback, 10000);
