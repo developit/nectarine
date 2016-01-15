@@ -12,10 +12,12 @@ html, body, #app {
 button, a {
 	outline: none;
 	tap-highlight-color: rgba(0,0,0,0);
+	user-select: none;
 }
 
 a {
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .loading {
@@ -62,6 +64,11 @@ a {
 	.fill();
 	.scroller();
 
+	.unread-count {
+		color: #AAA;
+		padding-left: 6px;
+	}
+
 	.stream-connection {
 		min-height: 100px;
 
@@ -85,6 +92,18 @@ a {
 				border-top: 1px solid #DDD;
 			}
 		}
+	}
+}
+
+
+.logo {
+	position: relative;
+	will-change: transform;
+	transition: all 500ms ease;
+
+	&[loading] {
+		.spin3d();
+		opacity: 0.5;
 	}
 }
 
@@ -196,6 +215,13 @@ a {
 		margin: 0 auto;
 		border-top: 1px solid #DDD;
 		overflow: hidden;
+
+		author {
+			display: inline-block;
+			overflow: hidden;
+			clear: both;
+			cursor: pointer;
+		}
 	}
 
 	.post-new-comment {
@@ -244,16 +270,73 @@ a {
 	}
 }
 
-.create.modal {
+
+.modal {
 	.modal();
 	// background: #FFF;
 
 	.content {
 		.pin();
 		// .scroller();
-		top: 56px;
+
+		&.has-header {
+			top: 56px;
+		}
+
+		&.has-footer {
+			bottom: 56px;
+		}
 	}
 
+	.footer {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 56px;
+		line-height: 56px;
+		text-align: center;
+	}
+}
+
+
+.wave.modal {
+	background: #FFF;
+	left: 50%;
+	top: 100%;
+	right: auto;
+	height: auto;
+	width: 240px;
+	max-height: 80%;
+	margin: 0 0 -5px -120px;
+	padding: 0 0 5px;
+	border-radius: 3px;
+	box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+
+	.content {
+		position: relative;
+	}
+
+	.footer {
+		position: relative;
+
+		.mdl-button {
+			width: 90%;
+		}
+	}
+
+	&[showing] ~ * {
+		opacity: 0.1;
+		pointer-events: none;
+	}
+
+	// .content {
+	// 	.scroller();
+	// }
+}
+
+
+.create.modal {
 	.error {
 		position: absolute;
 		bottom: 20px;
@@ -292,13 +375,10 @@ a {
 	}
 
 	button-bar {
-		// position: absolute;
-		// left: 0;
-		// bottom: 0;
-		// width: 100%;
 		text-align: center;
 	}
 }
+
 
 .error {
 	display: none;

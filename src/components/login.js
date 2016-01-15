@@ -4,6 +4,8 @@ import { Layout, TextField, Button, Icon } from 'preact-mdl';
 import peach from '../peach';
 import { emit } from '../pubsub';
 
+const NOOP = ()=>{};
+
 export default class Login extends Component {
 	state = {
 		type: 'register'
@@ -26,6 +28,27 @@ export default class Login extends Component {
 		}
 		peach[type](creds, (error, session) => {
 			if (error) return this.setState({ error });
+
+			if (type==='register') {
+				// auto-follow @nectarineapp so that we can see "friends of friends" in the explore tab
+				// the reason this uses @nectarineapp is because it has peachme set up to automatically accept our follow request.
+				// worst-case the request fails. then we time out after 10s and redirect to explore, but Peach is not fun without friends :(
+				peach.addFriend('nectarineapp', () => {
+					let callback = () => {
+						clearTimeout(timer);
+						peach.addFriend('peach', NOOP);
+						peach.addFriend('developit', NOOP);
+						emit('go', '/explore');
+					};
+					let timer = setTimeout(callback, 10000);
+					peach.rawRequest({
+						method: 'POST',
+						url: 'https://peachme.herokuapp.com/follow',
+						body: JSON.stringify({ name }),
+						headers: {'Content-Type':'application/json' }
+					}, callback);
+				});
+			}
 		});
 		if (e) return e.preventDefault(), false;
 	}

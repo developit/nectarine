@@ -17,10 +17,18 @@ const RENDERERS = {
 
 	text: ({ text }) => (<p>{ parseMessageText(text) || ' ' }</p>),
 
-	mention: props => RENDERERS.comment(props),
+	mention: props => RENDERERS.comment({
+		commentBody:`${(props.author || props.authorStream || EMPTY).displayName} mentioned you`,
+		...props
+	}),
 
-	comment: ({ commentBody, postMessage, author, authorStream, postID }) => (
-		<div class="comment-block">
+	tag: props => RENDERERS.comment({
+		commentBody:`${(props.author || props.authorStream || EMPTY).displayName} tagged you`,
+		...props
+	}),
+
+	comment: ({ type, commentBody, postMessage, author, authorStream, postID }) => (
+		<div class={`comment-block comment-type-${type}`}>
 			{ renderItem(postMessage && postMessage[0] || EMPTY) }
 			<div class="comment">
 				{ RENDERERS.text({ text:commentBody }) }
@@ -91,6 +99,7 @@ export default class Post extends Component {
 			emit('go', { url:`/profile/${encodeURIComponent(id)}` });
 		}
 		noBubble(e);
+		return false;
 	}
 
 	isLiked() {
@@ -112,7 +121,6 @@ export default class Post extends Component {
 			{ localLikes={} } = peach.store.getState();
 		localLikes[id] = liked;
 		peach.store.setState({ localLikes });
-		//LOCAL_LIKES[id] = liked;
 		this.setState({ liked });
 		peach[liked?'like':'unlike'](id, err => {
 			if (err) alert(`Error: ${err}`);
@@ -121,11 +129,31 @@ export default class Post extends Component {
 	}
 
 	@bind
+	clickComment(e) {
+		let t = e.target,
+			author;
+		do {
+			if (String(t.nodeName).toUpperCase()==='A') return;
+			let a = t && t.getAttribute && t.getAttribute('data-author-name');
+			if (a) author = a;
+		} while( (t=t.parentNode) );
+		this.setState({
+			newComment: `@${author} ${this.statenewComment || ''}`
+		});
+		setTimeout(this.focusCommentField, 50);
+	}
+
+	@bind
+	focusCommentField() {
+		this.base.querySelector('.post-new-comment textarea').focus();
+	}
+
+	@bind
 	renderInlineComment({ author, body }) {
 		let avatar = author.avatarSrc;
 		peach.cacheStream(author);
 		return (
-			<div class="comment">
+			<div class="comment" data-author-name={author.name} onClick={this.clickComment}>
 				<div class="avatar" data-author-id={author.id} onClick={this.goAuthor} style={avatar ? `background-image: url(${avatar});` : null} />
 				{ RENDERERS.text({ text:body }) }
 				<author>{ author.displayName }</author>

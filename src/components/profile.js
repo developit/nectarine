@@ -2,12 +2,18 @@ import { h, Component } from 'preact';
 import { Button, Icon, Card } from 'preact-mdl';
 import LoadingScreen from './loading-screen';
 import { bind, debounce } from 'decko';
+import { on, off, emit } from '../pubsub';
 import Post from './post';
 import peach from '../peach';
 
 export default class Profile extends Component {
 	componentDidMount() {
 		this.update();
+		on('refresh', this.update);
+	}
+
+	componentWillUnmount() {
+		off('refresh', this.update);
 	}
 
 	componentWillReceiveProps({ id }) {
@@ -27,6 +33,7 @@ export default class Profile extends Component {
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
 			this.setState({ loading:false, loadingNew:false, error, stream });
 			this.scrollToTop();
+			peach.markAsRead(id);
 		});
 	}
 
@@ -37,10 +44,7 @@ export default class Profile extends Component {
 
 	@bind
 	wave(type) {
-		if (!type || typeof type!=='string') type = 'wave';
-		peach.wave(this.props.id, type, error => {
-			if (error) alert('Error: '+error);
-		});
+		emit('wave', { to: this.props.id });
 	}
 
 	@bind
@@ -101,7 +105,8 @@ export default class Profile extends Component {
 								<span class="tag is-you">You!</span>
 							) : (
 								<Button icon primary onClick={this.wave}>
-									<Icon icon="mood" title="Wave" />
+									{/*<Icon icon="mood" title="Wave" />*/}
+									👋
 								</Button>
 							) }
 							{ !isMe && stream.followsYou ? (

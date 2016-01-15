@@ -11,6 +11,10 @@ try {
 } catch(e) {}
 
 // save to localStorage after writes
-store.subscribe(debounce( data => localStorage.setItem(STORE_ID, JSON.stringify(data)) ));
+store.subscribe(debounce(500, data => {
+	try {
+		localStorage.setItem(STORE_ID, JSON.stringify(data));
+	} catch(err) { console.error(err); }
+}));
 
 export default store;

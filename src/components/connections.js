@@ -1,10 +1,11 @@
 import { h, Component } from 'preact';
 import { Card, Button, Icon } from 'preact-mdl';
+import { Link } from 'preact-router';
 import { bind } from 'decko';
 import Post from './post';
 import LoadingScreen from './loading-screen';
 import peach from '../peach';
-import { emit } from '../pubsub';
+import { emit, on, off } from '../pubsub';
 
 export class Connections extends Component {
 	counter = 0;
@@ -15,6 +16,11 @@ export class Connections extends Component {
 		if (!this.lastUpdate || (Date.now()-this.lastUpdate)>30000) {
 			this.update();
 		}
+		on('refresh', this.update);
+	}
+
+	componentWillUnmount() {
+		off('refresh', this.update);
 	}
 
 	@bind
@@ -38,22 +44,13 @@ export class Connections extends Component {
 		return () => emit('go', { url });
 	}
 
-	@bind
-	followPeach() {
-		peach.addFriend('peach', () => {
-			if (!this.explore) emit('go', { url:'/explore' });
-			else this.update()
-		});
-	}
-
 	render({}, { loading, error, connections=[] }) {
 		if (!connections.length && !loading) return (
 			<div class="explore view">
 				<div class="inner">
 					<div class="nothing">
 						<p>Nothing to show.</p>
-						<p>Tap <Button icon colored><Icon icon="person add" /></Button> to add a friend.</p>
-						<p>Or <Button colored onClick={this.followPeach}>Follow @peach</Button></p>
+						<p>Let&apos;s go <Link href="/explore">Explore</Link>!</p>
 					</div>
 				</div>
 			</div>
@@ -66,7 +63,7 @@ export class Connections extends Component {
 						<Card shadow={2} class="centered stream-connection" onClick={this.linkTo(`/profile/${encodeURIComponent(id)}`)}>
 							<Card.Title>
 								<div class="avatar" style={`background-image: url(${avatarSrc});`} />
-								<Card.TitleText>{ displayName } ({ unreadPostCount })</Card.TitleText>
+								<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount })</span></Card.TitleText>
 							</Card.Title>
 							<Card.Text>
 								{ posts.length ? (

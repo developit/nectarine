@@ -19,10 +19,12 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	// 	store.setState({ streamCache:{} });
 	// }
 
+	peach.rawRequest = jan;
 	peach.api = api;
 	peach.url = url;
 	peach.store = store;
 	peach.streamCache = {};
+	peach._openRequests = 0;
 
 	peach.init = callback => {
 		if (typeof callback!=='function') callback = EMPTY_FUNC;
@@ -50,8 +52,12 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.isLoggedIn = () => !!store.getState().token;
 
 
+	peach.isLoading = () => peach._openRequests>0;
+
+
 	api.on('req', ({ xhr, req }) => {
 		// xhr.withCredentials = false;
+		if (!peach._openRequests++) peach.emit('loadstart');
 
 		let h = req.headers || (req.headers = {}),
 			{ id, token, streams } = store.getState();
@@ -81,6 +87,8 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 
 	api.on('res', ({ res, req }) => {
 		let { data } = res;
+
+		if (!--peach._openRequests) peach.emit('loadend');
 
 		if (res.status===401) {
 			res.error = 'Unauthorized';
@@ -159,6 +167,9 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.activity = method('get', '/activity');
 	peach.activity.isUnread = method('get', '/activity/isUnread');
 
+	/** Mark a stream as read. */
+	peach.markAsRead = (id, callback=EMPTY_FUNC) => api.put(`/stream/id/${enc(id)}/read`, cb(callback));
+
 	// peach.stream.id = (id, cb) => peach.user.stream(id, cb);
 
 	peach.user = {};
@@ -209,7 +220,7 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.cacheStream = stream => {
 		let cached = peach.streamCache[stream.id];
 		if (hasComments(cached) && !hasComments(stream)) {
-			console.warn(`ignoring cache update for ${stream.id}, no comments`);
+			//console.warn(`ignoring cache update for ${stream.id}, no comments`);
 			return;
 		}
 		if (!stream._fetched) stream._fetched = Date.now();

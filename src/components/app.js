@@ -4,6 +4,7 @@ import LoadingScreen from './loading-screen';
 import Header from './header';
 import Sidebar from './sidebar';
 import Create from './create';
+import Wave from './wave';
 import Main from './main';
 import Login from './login';
 import peach from '../peach';
@@ -16,6 +17,7 @@ class LoggedIn extends Component {
 		return (
 			<Layout fixed-header={true} js={false}>
 				<Create />
+				<Wave />
 				<Sidebar />
 				<Header />
 				<Main />

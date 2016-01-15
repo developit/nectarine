@@ -1,12 +1,13 @@
 import { h, Component } from 'preact';
-import { Layout, TextField, Button, Icon, CheckBox } from 'preact-mdl';
+import { Layout, TextField, Button, Icon, Spinner } from 'preact-mdl';
 import { bind } from 'decko';
 import { on, off, emit } from '../pubsub';
 
 const CLEAN = {
 	type: 'text',
 	text: '',
-	error: null
+	error: null,
+	loading: false
 };
 
 export default class Create extends Component {
@@ -36,13 +37,15 @@ export default class Create extends Component {
 		let { text, type } = this.state;
 		if (!text && type==='text') return this.setState({ error:'Enter a message' });
 
+		this.setState({ loading:true });
 		peach.post({ text, type }, (error, result) => {
+			this.setState({ loading:false });
 			if (error) this.setState({ error });
 			else this.close();
 		});
 	}
 
-	render({ }, { open, text='', error }) {
+	render({ }, { open, text='', error, loading }) {
 		return (
 			<div class="create modal" showing={open || null}>
 				<Layout.Header manual>
@@ -50,10 +53,12 @@ export default class Create extends Component {
 						<Button icon onClick={this.close}><Icon icon="close" /></Button>
 						<Layout.Title>New Post</Layout.Title>
 						<Layout.Spacer />
-						<Button icon onClick={this.submit}><Icon icon="send" /></Button>
+						<Button icon onClick={this.submit}>
+							{ loading ? <Spinner active /> : <Icon icon="send" /> }
+						</Button>
 					</Layout.HeaderRow>
 				</Layout.Header>
-				<div class="content">
+				<div class="content has-header">
 					<div class="inner">
 						<TextField class="text" multiline placeholder="Enter a message." value={text} onInput={this.linkState('text')} />
 						{/*

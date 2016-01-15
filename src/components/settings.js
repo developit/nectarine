@@ -68,7 +68,7 @@ export default class Settings extends Component {
 			this.setState({ loading:true });
 			peach.uploadAvatar(files[0], (error, { avatarSrc }={}) => {
 				this.setState({ loading:false, error });
-				console.log({ error, avatarSrc });
+				// console.log({ error, avatarSrc });
 				if (!error && avatarSrc) {
 					this.updateLocalProfile({ avatarSrc });
 					this.setState({ avatarSrc });

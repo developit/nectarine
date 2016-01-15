@@ -51,12 +51,22 @@
 	}
 }
 
+
 .spin() {
 	will-change: transform;
 	animation: spin 1s linear infinite;
 }
-
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
+}
+
+
+.spin3d() {
+	will-change: transform;
+	animation: spin3d 2s ease infinite;
+}
+@keyframes spin3d {
+	0% { transform: rotateY(0deg); }
+	100% { transform: rotateY(360deg); }
 }

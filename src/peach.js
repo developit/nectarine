@@ -15,6 +15,8 @@ export default peach;
 
 peach.on('login', () => {
 	updateConnections();
+
+	setInterval(updateConnections, 60000);
 });
 
 export function updateConnections() {

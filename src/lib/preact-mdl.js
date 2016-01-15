@@ -766,6 +766,13 @@ export class TextField extends MaterialComponent {
 		this.id = uid();
 	}
 
+	componentDidUpdate() {
+		let input = this.base && this.base.querySelector && this.base.querySelector('input,textarea');
+		if (input && input.value && input.value!==this.props.value) {
+			input.value = this.props.value;
+		}
+	}
+
 	mdlRender(props={}) {
 		let id = props.id || this.id,
 			p = extend({}, props);
@@ -774,7 +781,7 @@ export class TextField extends MaterialComponent {
 
 		let field = (
 			<div>
-				<input type="text" class="mdl-textfield__input" id={id} {...p} />
+				<input type="text" class="mdl-textfield__input" id={id} value="" {...p} />
 				<label class="mdl-textfield__label" for={id}>{ props.label || props.children }</label>
 			</div>
 		);
