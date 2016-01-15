@@ -162,8 +162,14 @@ export default class Post extends Component {
 	}
 
 	@bind
+	maybeComment(e) {
+		if (e && e.keyCode && e.keyCode===13) {
+			return this.comment(e);
+		}
+	}
+
+	@bind
 	comment(e) {
-		if (e && e.keyCode && e.keyCode!==13) return;
 		let { id } = this.props,
 			{ newComment, comments=[] } = this.state,
 			author = peach.store.getState().profile || {};
@@ -249,7 +255,7 @@ export default class Post extends Component {
 				) : null }
 				{ comment!==false ? (
 					<div class="post-new-comment" onClick={noBubble}>
-						<TextField multiline placeholder="Witty remark" value={newComment || ''} onInput={this.linkState('newComment')} onKeyDown={this.comment} />
+						<TextField multiline placeholder="Witty remark" value={newComment || ''} onInput={this.linkState('newComment')} onKeyDown={this.maybeComment} />
 						<Button icon onClick={this.comment}><Icon icon="send" /></Button>
 					</div>
 				) : null }
