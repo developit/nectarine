@@ -10,6 +10,11 @@ html, body {
 }
 
 
+textarea {
+	font: 14px/1.21 Roboto, 'Helvetica Neue', arial, sans-serif;
+}
+
+
 header {
 	&.seamless {
 		box-shadow: 0 0 0 #000;
@@ -94,6 +99,12 @@ header {
 			margin-left: -50px;
 		}
 	}
+}
+
+
+.mdl-button[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
 }
 
 

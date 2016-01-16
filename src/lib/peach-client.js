@@ -56,22 +56,10 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 
 
 	api.on('req', ({ xhr, req }) => {
-		// xhr.withCredentials = false;
 		if (!peach._openRequests++) peach.emit('loadstart');
 
 		let h = req.headers || (req.headers = {}),
 			{ id, token, streams } = store.getState();
-		//let [, streamId] = req.url.match(/\/stream\/id\/([^\/]+)(\/|$)/i) || [];
-
-		// if (!streamId && req.url.match(/\/stream\/visibility$/g)) {
-		// 	streamId = streams && streams[0] && streams[0].id;
-		// }
-		// if (streams && streamId) {
-		// 	let idToken = streams.filter(s=>s.id===streamId).map(s=>s.token)[0];
-		// 	if (idToken) {
-		// 		h.Authorization = `Bearer ${idToken}`;
-		// 	}
-		// }
 
 		if (token && !h.Authorization) {
 			h.Authorization = `Bearer ${token}`;
@@ -127,19 +115,11 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 				peach.user.me(EMPTY_FUNC, false);
 			}
 		}
-
-		// @TODO: check token here
-		// let token = e.data;
-		// if (token) {
-		// 	let prev = store.getState().token;
-		// 	if (token!==prev) store.setState({ token });
-		// }
 	});
 
 
 	// strip res from callback
 	let cb = callback => (err, res, data) => {
-		// console.log(err, res, data);
 		callback(err, data);
 		callback = null;
 	};
@@ -168,7 +148,38 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.activity.isUnread = method('get', '/activity/isUnread');
 
 	/** Mark a stream as read. */
-	peach.markAsRead = (id, callback=EMPTY_FUNC) => api.put(`/stream/id/${enc(id)}/read`, cb(callback));
+	peach.markAsRead = (id, callback=EMPTY_FUNC) => {
+		updateCachedConnection('id', id, {
+			unreadPostCount: 0,
+			lastRead: (Date.now() / 1000)|0
+		});
+		api.put(`/stream/id/${enc(id)}/read`, cb(callback));
+	};
+
+
+	function updateCachedConnection(by, value, update) {
+		let { connections } = peach.store.getState();
+		if (connections) {
+			for (let i=connections.length; i--; ) {
+				if (connections[i][by]===value) {
+					if (update===false) {
+						connections.splice(i, 1);
+					}
+					else {
+						for (let p in update) {
+							if (update.hasOwnProperty(p)) {
+								connections[i][p] = update[p];
+							}
+						}
+					}
+					peach.store.setState({ connections });
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 
 	// peach.stream.id = (id, cb) => peach.user.stream(id, cb);
 
@@ -310,7 +321,12 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	peach.addFriend = (username, callback) => api.post(`/stream/n/${enc(username)}/connection`, cb(callback));
 
 	/** Cancel a friend request */
-	peach.removeFriend = (username, callback) => api.delete(`/stream/n/${enc(username)}/connection`, cb(callback));
+	peach.removeFriend = (id, callback) => {
+		updateCachedConnection('id', id, false);
+		let cached = peach.streamCache[id];
+		if (cached) cached.youFollow = false;
+		api.delete(`/stream/id/${enc(id)}/connection`, cb(callback));
+	};
 
 	/** Issue a friend request */
 	peach.acceptFriendRequest = (id, callback) => api.post(`/friend-request/${enc(id)}/accept`, cb(callback));

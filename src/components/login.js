@@ -34,19 +34,21 @@ export default class Login extends Component {
 				// the reason this uses @nectarineapp is because it has peachme set up to automatically accept our follow request.
 				// worst-case the request fails. then we time out after 10s and redirect to explore, but Peach is not fun without friends :(
 				peach.addFriend('nectarineapp', () => {
-					let callback = () => {
-						clearTimeout(timer);
-						// peach.addFriend('peach', NOOP);
-						// peach.addFriend('developit', NOOP);
+					let timedOut = false;
+					let timer = setTimeout( () => {
+						timedOut = true;
 						emit('go', '/explore');
-					};
-					let timer = setTimeout(callback, 10000);
+					}, 10000);
 					peach.rawRequest({
 						method: 'POST',
-						url: 'https://peachme.herokuapp.com/follow',
+						url: 'http://peachme.nectarine.rocks/follow',
 						body: JSON.stringify({ name }),
 						headers: {'Content-Type':'application/json' }
-					}, callback);
+					}, () => {
+						clearTimeout(timeout);
+						if (timedOut) emit('refresh');
+						else emit('go', '/explore');
+					});
 				});
 			}
 		});

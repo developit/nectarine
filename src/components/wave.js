@@ -40,9 +40,9 @@ export default class Wave extends Component {
 	@bind
 	send({ type }) {
 		let { to } = this.state;
+		setTimeout(this.close, 50);
 		peach.wave(to, type, error => {
 			if (error) alert(`Error: ${error}`);
-			else this.close();
 		});
 	}
 

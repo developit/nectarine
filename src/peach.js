@@ -1,22 +1,22 @@
 import store from './store';
 import peachClient from 'peach-client';
 
-let url = 'https://cors-anywhere.herokuapp.com/v1.peachapi.com:443';
-
 let peach = peachClient({
-	url,
-	store,
+	url: 'https://api.nectarine.rocks',		// Open-Source proxy, see: git.io/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
 	imgurKey: '92e78601cb60df3',
+	store,
 	init: false
 });
 
 window.peach = peach;
 export default peach;
 
+let updateConnectionsTimer;
 peach.on('login', () => {
 	updateConnections();
 
-	setInterval(updateConnections, 60000);
+	clearInterval(updateConnectionsTimer);
+	updateConnectionsTimer = setInterval(updateConnections, 60000);
 });
 
 export function updateConnections() {

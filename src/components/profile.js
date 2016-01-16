@@ -28,7 +28,7 @@ export default class Profile extends Component {
 		let cached = peach.streamCache[id],
 			loadingNew = id!==this.state.id && !cached;
 
-		this.setState({ id, loading: true, loadingNew, stream:cached || {} });
+		this.setState({ id, error:null, loading: true, loadingNew, stream:cached || {}, followPending:false });
 
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
 			this.setState({ loading:false, loadingNew:false, error, stream });
@@ -52,14 +52,16 @@ export default class Profile extends Component {
 		let { stream } = this.state;
 		peach.addFriend(stream.name, error => {
 			if (error) alert('Error: '+error);
+			else this.setState({ followPending: true });
 		});
 	}
 
 	@bind
 	unfollow() {
 		let { stream } = this.state;
-		peach.removeFriend(stream.name, error => {
+		peach.removeFriend(stream.id, error => {
 			if (error) alert('Error: '+error);
+			this.setState({});
 		});
 	}
 
@@ -71,7 +73,7 @@ export default class Profile extends Component {
 		alert('This person follows you.');
 	}
 
-	render({}, { error, loading, loadingNew, stream }) {
+	render({}, { error, loading, loadingNew, stream, followPending=false }) {
 		if (error) return (
 			<div class="profile view">
 				<Card shadow={2} class="centered">
@@ -104,10 +106,7 @@ export default class Profile extends Component {
 							{ isMe ? (
 								<span class="tag is-you">You!</span>
 							) : (
-								<Button icon primary onClick={this.wave}>
-									{/*<Icon icon="mood" title="Wave" />*/}
-									👋
-								</Button>
+								<Button icon primary onClick={this.wave}>👋</Button>
 							) }
 							{ !isMe && stream.followsYou ? (
 								<Button icon primary onClick={this.followsYou}>
@@ -122,7 +121,7 @@ export default class Profile extends Component {
 							{ stream.youFollow ? (
 								<Button primary class="unfollow" onClick={this.unfollow}>Unfollow</Button>
 							) : (
-								<Button primary class="follow" onClick={this.follow}>Follow</Button>
+								<Button primary class="follow" disabled={followPending || null} onClick={this.follow}>Follow</Button>
 							) }
 						</div>
 					) }
