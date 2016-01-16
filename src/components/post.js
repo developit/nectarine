@@ -219,14 +219,14 @@ export default class Post extends Component {
 		return noBubble(e), false;
 	}
 
-	render({ id, comment=true, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments, deleted }) {
+	render({ id, comment=true, minimal=false, type, body, message, comments=[], author, authorId, createdTime }, { newComment, comments:stateComments, deleted }) {
 		if (deleted===true) return <div class="post post-deleted" />;
 
-		let author = body && body.authorStream,
-			avatar = author && author.avatarSrc,
+		author = author || body && body.authorStream;
+		let avatar = author && author.avatarSrc,
 			isLiked = this.isLiked(),
 			likeCount = this.likeCount(),
-			isOwn = !author || author.id===peach.store.getState().profile.id;
+			isOwn = (!author && !authorId) || (authorId || author.id)===peach.store.getState().profile.id;
 
 		if (stateComments) {
 			let commentIds = comments.map( c => c.id );
@@ -249,7 +249,7 @@ export default class Post extends Component {
 		}
 
 		if (minimal) return (
-			<div class={'post type-'+type} has-avatar={!!author || null} is-own={isOwn || null}>
+			<div class={'post type-'+type} minimal={minimal || null} has-avatar={!!author || null} is-own={isOwn || null}>
 				{ author ? (
 					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
 				) : null }

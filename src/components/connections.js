@@ -126,7 +126,7 @@ export class Connection extends Component {
 				</Card.Title>
 				<Card.Text>
 					{ posts.length ? (
-						<Post comment={false} {...posts[posts.length-1]} />
+						<Post comment={false} authorId={id} {...posts[posts.length-1]} />
 					) : null }
 				</Card.Text>
 			</Card>

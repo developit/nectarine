@@ -6,6 +6,8 @@ import { on, off, emit } from '../pubsub';
 import Post from './post';
 import peach from '../peach';
 
+const EMPTY = {};
+
 export default class Profile extends Component {
 	componentDidMount() {
 		this.update();
@@ -23,12 +25,14 @@ export default class Profile extends Component {
 	@bind
 	update(id=this.props.id) {
 		id = id || 'me';
+		if (id==='me') id = peach.store.getState().profile.id;
+
 		if (this.state.loading===true && this.state.id===id) return;
 
 		let cached = peach.streamCache[id],
 			loadingNew = id!==this.state.id && !cached;
 
-		this.setState({ id, error:null, loading: true, loadingNew, stream:cached || {}, followPending:false });
+		this.setState({ id, error:null, loading: true, loadingNew, stream:cached || EMPTY, followPending:false });
 
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
 			this.setState({ loading:false, loadingNew:false, error, stream });
@@ -85,7 +89,7 @@ export default class Profile extends Component {
 			</div>
 		);
 
-		if (!stream || !stream.name) return (
+		if (!stream || !stream.name || (loading && loadingNew)) return (
 			<div class="profile view">
 				<LoadingScreen />
 			</div>
@@ -129,7 +133,7 @@ export default class Profile extends Component {
 
 				<div class="posts">
 					<div class="posts-inner">{
-						(stream.posts || []).slice().reverse().map( post => <Post {...post} /> )
+						(stream.posts || []).slice().reverse().map( post => <Post authorId={stream.id} {...post} /> )
 					}</div>
 				</div>
 
