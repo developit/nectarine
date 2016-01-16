@@ -117,9 +117,21 @@ export class Connection extends Component {
 		return false;
 	}
 
-	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc, onClick }) {
+	@bind
+	onClick(e) {
+		let t = e.target;
+		do {
+			if (String(t.nodeName).toUpperCase()==='A') {
+				e.stopPropagation();
+				return;
+			}
+		} while( (t=t.parentNode) );
+		this.props.onClick(e);
+	}
+
+	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc }) {
 		return (
-			<Card shadow={2} key={key} class="centered stream-connection" onClick={onClick}>
+			<Card shadow={2} key={key} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
 					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
