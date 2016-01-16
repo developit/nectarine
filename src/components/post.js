@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { TextField, Button, Icon } from 'preact-mdl';
+import { TextField, Button, Icon, Menu } from 'preact-mdl';
 import parseMessageText from 'parse-message';
 import neatime from 'neatime';
 import { bind } from 'decko';
@@ -197,11 +197,37 @@ export default class Post extends Component {
 		}
 	}
 
-	render({ id, comment=true, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments }) {
+	@bind
+	confirmDelete() {
+		setTimeout( () => {
+			if (confirm('Permanently delete this post?')) this.delete();
+		}, 200);
+	}
+
+	delete() {
+		let { id } = this.props;
+		peach.deletePost(id, err => {
+			if (err) return alert(`Error: ${err}`);
+			this.setState({ deleted: true });
+		});
+	}
+
+	@bind
+	openPostMenu(e) {
+		let menu = this.base.querySelector('.mdl-menu');
+		if (menu) menu.MaterialMenu.toggle();
+		return noBubble(e), false;
+	}
+
+	render({ id, comment=true, minimal=false, type, body, message, comments=[], createdTime }, { newComment, comments:stateComments, deleted }) {
+		if (deleted===true) return <div class="post post-deleted" />;
+
 		let author = body && body.authorStream,
 			avatar = author && author.avatarSrc,
 			isLiked = this.isLiked(),
-			likeCount = this.likeCount();
+			likeCount = this.likeCount(),
+			isOwn = !author || author.id===peach.store.getState().profile.id;
+
 		if (stateComments) {
 			let commentIds = comments.map( c => c.id );
 			comments = comments.concat(stateComments.filter( c => commentIds.indexOf(c.id)<0 ));
@@ -223,11 +249,13 @@ export default class Post extends Component {
 		}
 
 		if (minimal) return (
-			<div class={'post type-'+type}>
+			<div class={'post type-'+type} has-avatar={!!author || null} is-own={isOwn || null}>
 				{ author ? (
 					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
 				) : null }
-				<span class="post-time">{ neatime(createdTime * 1000) }</span>
+				<div class="post-meta">
+					<span class="post-time">{ neatime(createdTime * 1000) }</span>
+				</div>
 				<div class="items">{
 					message.map(renderItem)
 				}</div>
@@ -235,19 +263,33 @@ export default class Post extends Component {
 		);
 
 		return (
-			<div class={'post type-'+type}>
-				{ author ? (
-					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
-				) : null }
-				<span class="post-time">{ neatime(createdTime * 1000) }</span>
-				<Button icon class="like-unlike" is-liked={isLiked || null} onClick={this.toggleLike}>
-					<Icon icon="favorite" badge={likeCount || null} />
-				</Button>
+			<div class={'post type-'+type} has-avatar={!!author || null} is-own={isOwn || null}>
+				<div class="avatar" onClick={this.goAuthor} style={author ? `background-image: url(${avatar});` : null} />
+
+				<div class="post-meta">
+					<span class="post-time">{ neatime(createdTime * 1000) }</span>
+
+					{ isOwn ? (
+						<span class="post-menu-wrap">
+							<Button id={`postmenu-${id}`} class="post-menu" onClick={this.openPostMenu} icon><Icon icon="more vert" /></Button>
+							<Menu bottom-right for={`postmenu-${id}`}>
+								{/*<Menu.Item onClick={this.share}>Share</Menu.Item>*/}
+								<Menu.Item onClick={this.confirmDelete}>Delete</Menu.Item>
+							</Menu>
+						</span>
+					) : null }
+
+					<Button icon class="like-unlike" is-liked={isLiked || null} onClick={this.toggleLike}>
+						<Icon icon="favorite" badge={likeCount || null} />
+					</Button>
+				</div>
+
 				<div class="items">{
 					message.map(renderItem)
 				}</div>
+
 				{ comment!==false ? (
-					<div class="comments" onClick={noBubble}>
+					<div class="comments" onClick={noBubble} onTouchStart={noBubble} onMouseDown={noBubble}>
 						{ comments && comments.length ? (
 							comments.map(this.renderInlineComment)
 						) : null }

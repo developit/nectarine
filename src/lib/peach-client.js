@@ -242,8 +242,11 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	/** Publish a text post */
 	peach.post = (post, callback) => {
 		if (typeof post==='string') post = { text:post, type:'text' };
-		api.post({ url:'/post', body:{ message:[post] } }, cb(callback));
+		api.post({ url:'/post', body:{ message:[].concat(post) } }, cb(callback));
 	};
+
+	/** Delete a post. */
+	peach.deletePost = (id, callback) => api.delete(`/post/${enc(id)}`, cb(callback));
 
 	/** Send a wave of some type to the given profile ID.
 	 *	Available `type` values:

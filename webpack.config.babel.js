@@ -63,6 +63,7 @@ module.exports = {
 	stats: { colors: true },
 	devtool: process.env.NODE_ENV==='production' ? 'source-map' : 'inline-source-map',
 	devServer: {
+		host: '0.0.0.0',
 		port: process.env.PORT || 8080,
 		contentBase: './src',
 		historyApiFallback: true,

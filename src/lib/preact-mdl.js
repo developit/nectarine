@@ -168,6 +168,7 @@ let upgradeQueue = {
 	add(base) {
 		if (upgradeQueue.items.push(base)===1) {
 			requestAnimationFrame(upgradeQueue.process);
+			// setTimeout(upgradeQueue.process, 1);
 		}
 	},
 	process() {
@@ -578,6 +579,7 @@ export class Spinner extends MaterialComponent {
  */
 export class Menu extends MaterialComponent {
 	component = 'menu';
+	nodeName = 'ul';
 	js = true;
 	ripple = true;
 }

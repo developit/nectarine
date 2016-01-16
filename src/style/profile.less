@@ -7,7 +7,6 @@
 	header {
 		position: relative;
 		height: 120px;
-		// background: url(http://www.getmdl.io/templates/blog/images/coffee.jpg) center / cover;
 		background: linear-gradient(to bottom, #EEE, #CCC);
 		overflow: hidden;
 
@@ -17,13 +16,14 @@
 			top: -25%;
 			height: 150%;
 			background: url(/assets/texture.jpg) center/cover;
-			opacity: 0;
-			transform: translateY(10%);
-			animation: fadeIn 2s ease forwards 1 500ms;
-			@keyframes fadeIn { to{
-				opacity: 0.3;
-				transform: translateY(0%);
-			} }
+			opacity: 0.3;
+			// opacity: 0;
+			// transform: translateY(10%);
+			// animation: fadeIn 2s ease forwards 1 500ms;
+			// @keyframes fadeIn { to{
+			// 	opacity: 0.3;
+			// 	transform: translateY(0%);
+			// } }
 		}
 
 		& > * {
@@ -104,7 +104,7 @@
 
 .post {
 	margin: 10px;
-	padding: 10px;
+	padding: 30px 10px 10px;
 	border-radius: 3px;
 	box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 	background: #FFF;

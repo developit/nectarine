@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { Layout, TextField, Button, Icon, Spinner } from 'preact-mdl';
-import { bind } from 'decko';
+import { bind, debounce } from 'decko';
 import { on, off, emit } from '../pubsub';
 
 const CLEAN = {
@@ -34,18 +34,64 @@ export default class Create extends Component {
 
 	@bind
 	submit() {
-		let { text, type } = this.state;
+		let { text, type, images, selectedMagic } = this.state;
 		if (!text && type==='text') return this.setState({ error:'Enter a message' });
 
+		let post = [];
+
+		text = text.replace(/^gif\s+([^\s]+)/i, '');
+		if (text) {
+			post.push({ text, type });
+		}
+
+		if (images && (selectedMagic || selectedMagic===0)) {
+			let img = images[selectedMagic].images.downsized;
+			post.push({
+				type: 'image',
+				src: img.url,
+				width: Math.round(img.width),
+				height: Math.round(img.height)
+			});
+		}
+
+		if (!post.length) return;
+
 		this.setState({ loading:true });
-		peach.post({ text, type }, (error, result) => {
+		peach.post(post, (error, result) => {
 			this.setState({ loading:false });
 			if (error) this.setState({ error });
 			else this.close();
 		});
 	}
 
-	render({ }, { open, text='', error, loading }) {
+	componentDidUpdate({ }, { text='' }) {
+		let p = text.match(/^gif\s+([^\s]+)/i);
+		this.magicGif(p && p[1]);
+	}
+
+	@debounce(500)
+	magicGif(terms) {
+		if (terms===this.gifTerms) return;
+		this.gifTerms = terms;
+		// console.log(terms);
+		if (!terms) return this.setState({ selectedMagic:null, images: null });
+		fetch(`http://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(terms)}&api_key=dc6zaTOxFJmzC`)
+			.then( r => r.json() )
+			.then( ({ data=[] }) => {
+				this.setState({
+					selectedMagic: null,
+					images: data
+				});
+			});
+	}
+
+	@bind
+	selectMagic(e) {
+		let index = e.target.getAttribute('data-magic');
+		this.setState({ selectedMagic:index });
+	}
+
+	render({ }, { open, text='', error, loading, images, selectedMagic }) {
 		return (
 			<div class="create modal" showing={open || null}>
 				<Layout.Header manual>
@@ -58,14 +104,21 @@ export default class Create extends Component {
 						</Button>
 					</Layout.HeaderRow>
 				</Layout.Header>
-				<div class="content has-header">
+				<div class="content has-header" magic={!!images || null}>
 					<div class="inner">
 						<TextField class="text" multiline placeholder="Enter a message." value={text} onInput={this.linkState('text')} />
-						{/*
-						<button-bar>
-							<Button raised accent onClick={this.submit}>Post</Button>
-						</button-bar>
-						*/}
+
+						<div class="magic">
+							<div class="inner">
+								{ images ? images.map( (p, i) => (
+									<img
+										data-magic={i}
+										selected={(selectedMagic==i) || null}
+										onClick={this.selectMagic}
+										src={p.images.downsized.url} />
+								)) : null }
+							</div>
+						</div>
 					</div>
 					{ error ? <div class={{error:1, showing:error}}>{ error }</div> : null }
 				</div>
