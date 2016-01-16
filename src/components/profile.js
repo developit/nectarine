@@ -9,6 +9,8 @@ import peach from '../peach';
 const EMPTY = {};
 
 export default class Profile extends Component {
+	_counter = 0;
+
 	componentDidMount() {
 		this.update();
 		on('refresh', this.update);
@@ -30,11 +32,13 @@ export default class Profile extends Component {
 		if (this.state.loading===true && this.state.id===id) return;
 
 		let cached = peach.streamCache[id],
-			loadingNew = id!==this.state.id && !cached;
+			loadingNew = id!==this.state.id && !cached,
+			c = ++this._counter;
 
 		this.setState({ id, error:null, loading: true, loadingNew, stream:cached || EMPTY, followPending:false });
 
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
+			if (c!==this._counter) return;
 			this.setState({ loading:false, loadingNew:false, error, stream });
 			this.scrollToTop();
 			peach.markAsRead(id);
