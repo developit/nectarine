@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { Layout } from 'preact-mdl';
-import 'optimized-visibility';
 import { bind, debounce } from 'decko';
+import { updateAllVisibility } from 'optimized-visibility';
 import LoadingScreen from './loading-screen';
 import Header from './header';
 import Sidebar from './sidebar';
@@ -10,6 +10,7 @@ import Wave from './wave';
 import Main from './main';
 import Login from './login';
 import peach from '../peach';
+import { on, off } from '../pubsub';
 
 class LoggedIn extends Component {
 	shouldComponentUpdate() {
@@ -39,13 +40,21 @@ export default class App extends Component {
 		peach.on('login', () => this.setState({ loggedin:true }) );
 		peach.on('logout', () => this.setState({ loggedin:false }) );
 
+		on('update-visibility', this.updateVisibility);
+
 		this.bodyAttr('loaded', true);
 		peach.store.subscribe(this.updateBackground);
 		this.updateBackground(peach.store.getState());
 	}
 
 	componentWillUnmount() {
+		off('update-visibility', this.updateVisibility);
 		store.unsubscribe(this.updateBackground);
+	}
+
+	@debounce(200)
+	updateVisibility() {
+		updateAllVisibility();
 	}
 
 	@bind

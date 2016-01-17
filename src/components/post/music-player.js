@@ -20,7 +20,7 @@ export default class MusicPlayer extends Component {
 		return (
 			<div class="music-player">
 				<h6>{ title }</h6>
-				<div class="music-player-inner" optimized-visibility more-optimized style="width:100%; height:380px;">
+				<div class="music-player-inner" optimized-visibility more-optimized style="max-width:300px; margin:0 auto; width:100%; height:380px;">
 					{ id ? (
 						<iframe src={url} frameborder="0" allowtransparency="true" style="width:100%; height:380px;" />
 					) : null }
