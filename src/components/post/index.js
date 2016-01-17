@@ -1,87 +1,15 @@
 import { h, Component } from 'preact';
 import { TextField, Button, Icon, Menu } from 'preact-mdl';
-import parseMessageText from 'parse-message';
 import neatime from 'neatime';
 import { bind } from 'decko';
-import { emit } from '../pubsub';
-
-const EMPTY = {};
-
-
-const RENDERERS = {
-	image: props => (<ImageViewer {...props} />),
-
-	gif: props => (<ImageViewer {...props} />),
-
-	video: props => (<VideoPlayer {...props} />),
-
-	text: ({ text }) => (<p>{ parseMessageText(text) || ' ' }</p>),
-
-	mention: props => RENDERERS.comment({
-		commentBody:`${(props.author || props.authorStream || EMPTY).displayName} mentioned you`,
-		...props
-	}),
-
-	tag: props => RENDERERS.comment({
-		commentBody:`${(props.author || props.authorStream || EMPTY).displayName} tagged you`,
-		...props
-	}),
-
-	comment: ({ type, commentBody, postMessage, author, authorStream, postID }) => (
-		<div class={`comment-block comment-type-${type}`}>
-			{ renderItem(postMessage && postMessage[0] || EMPTY) }
-			<div class="comment">
-				{ RENDERERS.text({ text:commentBody }) }
-				<author>{ (author || authorStream || EMPTY).displayName || null }</author>
-			</div>
-		</div>
-	),
-
-	like: ({ postMessage, authorStream, postID }) => (
-		<div class="like-block">
-			{ renderItem(postMessage[0]) }
-			<div class="like">
-				{ authorStream.displayName } liked this
-			</div>
-		</div>
-	),
-
-	link: ({ title, description, url, imageURL }) => (
-		<div class="item-link">
-			<a href={url} target="_blank">{ title }</a>
-			<p>{ description }</p>
-			<img src={imageURL} />
-		</div>
-	),
-
-	music: props => (<MusicPlayer {...props} />),
-
-	location: ({ name, iconSrc, lat, long, ...props }) => (
-		<a href={`https://www.google.com/maps/place/${encodeURIComponent(name)}/@${encodeURIComponent(lat)},${encodeURIComponent(long)},17z/`} target="_blank" style="display:block;">
-			{ iconSrc ? <img src={iconSrc} width="26" height="26" style="float:left; background:#CCC; border-radius:50%;" /> : null }
-			<div style="overflow:hidden; padding:5px;">{ name }</div>
-		</a>
-	)
-};
-
-
-const renderItem = item => {
-	let fn = RENDERERS[String(item.type).toLowerCase()];
-	if (!fn) {
-		if (Object.keys(item).length>0) {
-			console.warn(`Unknown type: ${item.type}`, item);
-		}
-		return null;
-	}
-	return <div class={'item item-'+item.type}>{ fn(item) }</div>;
-};
-
+import { emit } from '../../pubsub';
+import Comment from './comment';
+import { renderItem } from './renderers';
 
 
 const noBubble = e => {
 	if (e) e.stopPropagation();
 };
-
 
 
 export default class Post extends Component {
@@ -93,8 +21,7 @@ export default class Post extends Component {
 	@bind
 	goAuthor(e) {
 		let { author, body } = this.props,
-			inlineAuthor = e && e.target && e.target.getAttribute('data-author-id'),
-			id = inlineAuthor || (author && author.id) || (body && body.authorStream && body.authorStream.id);
+			id = (author && author.id) || (body && body.authorStream && body.authorStream.id);
 		if (id) {
 			emit('go', { url:`/profile/${encodeURIComponent(id)}` });
 		}
@@ -129,16 +56,9 @@ export default class Post extends Component {
 	}
 
 	@bind
-	clickComment(e) {
-		let t = e.target,
-			author;
-		do {
-			if (String(t.nodeName).toUpperCase()==='A') return;
-			let a = t && t.getAttribute && t.getAttribute('data-author-name');
-			if (a) author = a;
-		} while( (t=t.parentNode) );
+	clickComment({ author }) {
 		this.setState({
-			newComment: `@${author} ${this.statenewComment || ''}`
+			newComment: `@${author.name} ${this.state.newComment || ''}`
 		});
 		setTimeout(this.focusCommentField, 50);
 	}
@@ -146,19 +66,6 @@ export default class Post extends Component {
 	@bind
 	focusCommentField() {
 		this.base.querySelector('.post-new-comment textarea').focus();
-	}
-
-	@bind
-	renderInlineComment({ author, body }) {
-		let avatar = author.avatarSrc;
-		peach.cacheStream(author);
-		return (
-			<div class="comment" data-author-name={author.name} onClick={this.clickComment}>
-				<div class="avatar" data-author-id={author.id} onClick={this.goAuthor} style={avatar ? `background-image: url(${avatar});` : null} />
-				{ RENDERERS.text({ text:body }) }
-				<author>{ author.displayName }</author>
-			</div>
-		);
 	}
 
 	@bind
@@ -214,7 +121,7 @@ export default class Post extends Component {
 
 	@bind
 	openPostMenu(e) {
-		let menu = this.base.querySelector('.mdl-menu');
+		let menu = this.base.querySelector(`.mdl-menu[for="postmenu-${this.props.id}"]`);
 		if (menu) menu.MaterialMenu.toggle();
 		return noBubble(e), false;
 	}
@@ -291,7 +198,13 @@ export default class Post extends Component {
 				{ comment!==false ? (
 					<div class="comments" onClick={noBubble} onTouchStart={noBubble} onMouseDown={noBubble}>
 						{ comments && comments.length ? (
-							comments.map(this.renderInlineComment)
+							comments.map( comment => (
+								<Comment
+									allowDelete={isOwn}
+									onClick={this.clickComment}
+									{...comment}
+								/>
+							) )
 						) : null }
 					</div>
 				) : null }
@@ -300,74 +213,6 @@ export default class Post extends Component {
 						<TextField multiline placeholder="Witty remark" value={newComment || ''} onInput={this.linkState('newComment')} onKeyDown={this.maybeComment} />
 						<Button icon onClick={this.comment}><Icon icon="send" /></Button>
 					</div>
-				) : null }
-			</div>
-		);
-	}
-}
-
-
-class ImageViewer extends Component {
-	// @bind
-	// toggle(e) {
-	// 	this.setState({ full: !this.state.full });
-	// 	if (e) return e.preventDefault(), e.stopPropagation(), false;
-	// }
-
-	render({ src }, { full }) {
-		return <img src={src} style={{
-			display: 'block',
-			maxWidth: full?'auto':'',
-			margin: 'auto'
-		}} onClick={this.toggle} />;
-	}
-}
-
-
-class VideoPlayer extends Component {
-	@bind
-	play(e) {
-		this.setState({ play:true });
-		noBubble(e);
-	}
-
-	@bind
-	stop(e) {
-		this.setState({ play:false });
-		noBubble(e);
-	}
-
-	componentDidUpdate() {
-		if (this.state.play) {
-			setTimeout(() => this.base.querySelector('video').play(), 100);
-		}
-	}
-
-	render({ src, posterSrc }, { play }) {
-		return (
-			<div class="video-player">
-				<div class="poster" onClick={this.play}>
-					<img src={posterSrc} />
-					<Icon icon="play circle outline" />
-				</div>
-				{ play ? (
-					<video src={src} onPause={this.stop} onEnd={this.stop} autoplay autobuffer autostart />
-				) : null }
-			</div>
-		);
-	}
-}
-
-
-class MusicPlayer extends Component {
-	render({ title, spotifyData={} }) {
-		let id = spotifyData && spotifyData.track && spotifyData.track.id,
-			url = `https://embed.spotify.com/?uri=spotify:track:${encodeURIComponent(id)}`;
-		return (
-			<div class="music-player">
-				<h6>{ title }</h6>
-				{ id ? (
-					<iframe src={url} frameborder="0" allowtransparency="true" style="width:100%; height:380px;" />
 				) : null }
 			</div>
 		);

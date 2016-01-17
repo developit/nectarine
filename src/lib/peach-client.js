@@ -279,6 +279,11 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	 */
 	peach.comment = method('post', '/comment');
 
+	/** Delete a comment, either your own or off of a post of yours.
+	 *	@param {string} id		The comment ID
+	 */
+	peach.deleteComment = (id, callback) => api.delete(`/comment/${enc(id)}`, cb(callback));
+
 	/** Set your stream visibility */
 	peach.setVisibility = method('post', '/stream/visibility');
 

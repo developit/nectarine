@@ -51,12 +51,25 @@ a {
 .like-block,
 .comments {
 	.comment, .like {
+		position: relative;
 		border-left: 3px solid #EEE;
 		margin: 5px 10px;
 		padding: 5px 10px;
+
 		p {
 			margin: 0;
 			font-size: 100%;
+		}
+
+		.comment-menu-wrap {
+			float: right;
+			position: relative;
+			overflow: visible;
+
+			.mdl-menu__container {
+				top: 40px;
+				right: 0;
+			}
 		}
 	}
 	author {
