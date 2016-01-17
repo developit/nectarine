@@ -41,7 +41,7 @@ export default class Login extends Component {
 					}, 10000);
 					peach.rawRequest({
 						method: 'POST',
-						url: 'http://peachme.nectarine.rocks/follow',
+						url: 'https://peachme.nectarine.rocks/follow',
 						body: JSON.stringify({ name }),
 						headers: {'Content-Type':'application/json' }
 					}, () => {
