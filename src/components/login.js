@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
-import { Layout, TextField, Button, Icon } from 'preact-mdl';
+import { Card, Layout, TextField, Button, Icon } from 'preact-mdl';
 import peach from '../peach';
 import { emit } from '../pubsub';
 
@@ -79,55 +79,63 @@ export default class Login extends Component {
 			<Layout id="login" fixed-header={true} js={false}>
 				<Layout.Header>
 					<Layout.HeaderRow>
-						<Layout.Title centered>
-							{ type==='register' ? 'Sign Up' : 'Log In' }
+						<Layout.Title>
+							Nectarine
 						</Layout.Title>
 
 						<Layout.Spacer />
+						<Button icon>🍑</Button>
+						<Layout.Spacer />
 
-						<Icon icon="arrow forward" onClick={this.submit} />
+						<Button icon onClick={this.submit}><Icon icon="arrow forward" /></Button>
 					</Layout.HeaderRow>
 				</Layout.Header>
 
 				<form action="javascript:" onSubmit={this.submit}>
-					<div class={{error:1, showing:error}}>{ error || null }</div>
+					<Card shadow={2} class="centered">
+						<Card.Text>
+							<h4>{ type==='register' ? 'Sign Up' : 'Sign In' }</h4>
 
-					<div style={{ maxHeight: type==='register'?100:0, transition:'all 500ms ease', overflow:'hidden' }}>
-						<TextField
-							label="Username"
-							floating-label
-							pattern="^[a-z0-9_.-]+$"
-							required={type==='register' && !!error || null}
-							onInput={ this.linkState('name') }
-							onChange={ this.checkEmail }
-							value={ name } />
-					</div>
+							<div class={{error:1, showing:error}}>{ error || null }</div>
 
-					<TextField
-						label="Email"
-						type="email"
-						required={!!error || null}
-						floating-label
-						onInput={ this.linkState('email') }
-						value={ email } />
+							<div style={{ maxHeight: type==='register'?100:0, transition:'all 500ms ease', overflow:'hidden' }}>
+								<TextField
+									label="Username"
+									floating-label
+									pattern="^[a-z0-9_.-]+$"
+									required={type==='register' && !!error || null}
+									onInput={ this.linkState('name') }
+									onChange={ this.checkEmail }
+									value={ name } />
+							</div>
 
-					<TextField
-						type="password"
-						label="Password"
-						required={!!error || null}
-						floating-label
-						onInput={ this.linkState('password') }
-						value={ password } />
+							<TextField
+								label="Email"
+								type="email"
+								required={!!error || null}
+								floating-label
+								onInput={ this.linkState('email') }
+								value={ email } />
 
-					<button-bar>
-						<Button raised colored onClick={this.submit}>
-							{ type==='register' ? 'Sign Up' : 'Log In' }
-						</Button>
-					</button-bar>
+							<TextField
+								type="password"
+								label="Password"
+								required={!!error || null}
+								floating-label
+								onInput={ this.linkState('password') }
+								value={ password } />
 
-					<button-bar>
-						<a onClick={this.switchMode}>{ type==='register' ? 'Already have an account?' : 'Need to sign up?' }</a>
-					</button-bar>
+							<button-bar>
+								<Button raised colored onClick={this.submit}>
+									{ type==='register' ? 'Sign Up' : 'Log In' }
+								</Button>
+							</button-bar>
+
+							<button-bar>
+								<a onClick={this.switchMode}>{ type==='register' ? 'Already have an account?' : 'Need to sign up?' }</a>
+							</button-bar>
+						</Card.Text>
+					</Card>
 				</form>
 			</Layout>
 		);

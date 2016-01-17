@@ -9,16 +9,23 @@ html, body, #app {
 	overflow: hidden;
 }
 
+body[plain-background] {
+	&, #content, #login {
+		background: #F4F4F4;
+	}
+
+	.loading[overlay] {
+		background: #F4F4F4;
+	}
+}
+
+
 #app {
 	background: #888;
 }
 
-#content {
+#content, #login {
 	background: @background;
-
-	&[plain-background] {
-		background: #F4F4F4;
-	}
 }
 
 button, a {
