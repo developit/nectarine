@@ -7,24 +7,25 @@
 	header {
 		position: relative;
 		height: 120px;
-		background: linear-gradient(to bottom, #EEE, #CCC);
+		// background: linear-gradient(to bottom, #EEE, #CCC);
+		background: url(/assets/texture.jpg) center/cover;
 		overflow: hidden;
 
-		&::before {
-			content: '';
-			.fill();
-			top: -25%;
-			height: 150%;
-			background: url(/assets/texture.jpg) center/cover;
-			opacity: 0.3;
-			// opacity: 0;
-			// transform: translateY(10%);
-			// animation: fadeIn 2s ease forwards 1 500ms;
-			// @keyframes fadeIn { to{
-			// 	opacity: 0.3;
-			// 	transform: translateY(0%);
-			// } }
-		}
+		// &::before {
+		// 	content: '';
+		// 	.fill();
+		// 	top: -25%;
+		// 	height: 150%;
+		// 	background: url(/assets/texture.jpg) center/cover;
+		// 	// opacity: 0.3;
+		// 	// opacity: 0;
+		// 	// transform: translateY(10%);
+		// 	// animation: fadeIn 2s ease forwards 1 500ms;
+		// 	// @keyframes fadeIn { to{
+		// 	// 	opacity: 0.3;
+		// 	// 	transform: translateY(0%);
+		// 	// } }
+		// }
 
 		& > * {
 			position: relative;
