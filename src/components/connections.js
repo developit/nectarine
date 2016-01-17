@@ -79,25 +79,17 @@ export class Connections extends Component {
 		// filter out connections who have not posted since reading.
 		connections = connections.filter( c => c.unreadPostCount!==0 );
 
+		let { prefs } = peach.store.getState();
+		if (prefs && prefs.limit && connections.length>50) {
+			connections.length = 50;
+		}
+
 		return (
 			<div class="explore view">
 				<div class="inner">
 					{ connections.map( connection => (
 						<Connection {...connection} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
 					)) }
-					{/* connections.map( ({ id, displayName, posts=[], unreadPostCount=0, avatarSrc }) => (
-						<Card shadow={2} class="centered stream-connection" onClick={this.linkTo(`/profile/${encodeURIComponent(id)}`)}>
-							<Card.Title>
-								<div class="avatar" style={`background-image: url(${avatarSrc});`} />
-								<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount })</span></Card.TitleText>
-							</Card.Title>
-							<Card.Text>
-								{ posts.length ? (
-									<Post comment={false} {...posts[posts.length-1]} />
-								) : null }
-							</Card.Text>
-						</Card>
-					)) */}
 					{ !connections.length && loading ? <LoadingScreen overlay /> : null }
 				</div>
 			</div>

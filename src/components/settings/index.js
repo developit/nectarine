@@ -1,7 +1,8 @@
 import { h, Component } from 'preact';
 import { Card, TextField, Button, Icon, Spinner, CheckBox } from 'preact-mdl';
+import Preferences from './preferences';
 import { bind } from 'decko';
-import peach from '../peach';
+import peach from '../../peach';
 import chooseFiles from 'choose-files';
 
 export default class Settings extends Component {
@@ -11,10 +12,6 @@ export default class Settings extends Component {
 
 	@bind
 	update() {
-		// peach.getVisibility((error, visibility) => {
-		// 	if (error) this.setState({ error });
-		// 	this.setState({ visibility });
-		// });
 		this.setState({ loading: true });
 		peach.user.me( (error, { name, displayName, avatarSrc, isPublic }) => {
 			let visibility = { friendsOnly: isPublic };
@@ -84,7 +81,7 @@ export default class Settings extends Component {
 					<div style="position:absolute;right:10px;top:10px;">{ loading ? <Spinner /> : null }</div>
 
 					<Card.Title>
-						<Card.TitleText>Settings</Card.TitleText>
+						<Card.TitleText>Account Settings</Card.TitleText>
 					</Card.Title>
 
 					<Card.Text>
@@ -119,6 +116,8 @@ export default class Settings extends Component {
 						</form>
 					</Card.Text>
 				</Card>
+
+				<Preferences />
 			</div>
 		);
 	}
