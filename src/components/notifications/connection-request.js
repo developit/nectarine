@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { Button, Icon } from 'preact-mdl';
 import { bind } from 'decko';
+import { emit } from '../../pubsub';
 import peach from '../../peach';
 
 export default class ConnectionRequest extends Component {
