@@ -36,6 +36,10 @@ export default class App extends Component {
 		peach.init( () => this.setState({ pending:false }) );
 		peach.on('login', () => this.setState({ loggedin:true }) );
 		peach.on('logout', () => this.setState({ loggedin:false }) );
+
+		try {
+			document.body.setAttribute('loaded', 'true');
+		} catch(err) {}
 	}
 
 	render({}, { pending, loggedin }) {

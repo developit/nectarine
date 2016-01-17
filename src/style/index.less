@@ -9,6 +9,14 @@ html, body, #app {
 	overflow: hidden;
 }
 
+#app {
+	background: #888;
+}
+
+#content {
+	background: @background;
+}
+
 button, a {
 	outline: none;
 	tap-highlight-color: rgba(0,0,0,0);
@@ -186,7 +194,7 @@ a {
 	}
 
 
-	&:not([has-avatar]) .avatar {
+	&:not([has-avatar]) > .avatar {
 		display: none;
 	}
 
@@ -325,6 +333,10 @@ a {
 
 		&.has-header {
 			top: 56px;
+
+			@media (min-width: 1025px) {
+				top: 64px;
+			}
 		}
 
 		&.has-footer {
@@ -352,10 +364,11 @@ a {
 	height: auto;
 	width: 240px;
 	max-height: 80%;
-	margin: 0 0 -5px -120px;
+	margin: 5px 0 0 -120px;
 	padding: 0 0 5px;
 	border-radius: 3px;
 	box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+	.scroller();
 
 	.content {
 		position: relative;
@@ -363,6 +376,7 @@ a {
 
 	.footer {
 		position: relative;
+		background: #FFF;
 
 		.mdl-button {
 			width: 90%;
@@ -374,6 +388,29 @@ a {
 		pointer-events: none;
 	}
 
+	@media (min-height: 561px) {
+		margin: 0 0 0 -120px;
+
+		&[showing] {
+			transform: translateY(-112.5%);
+		}
+	}
+
+	@media (max-height: 560px) {
+		height: 80%;
+
+		.content {
+			.pin();
+			bottom: 56px;
+			.scroller();
+		}
+
+		.footer {
+			position: absolute;
+			box-shadow: 0 0 4px rgba(0,0,0,0.3);
+		}
+	}
+
 	// .content {
 	// 	.scroller();
 	// }
@@ -381,6 +418,30 @@ a {
 
 
 .create.modal {
+
+	@media (min-width: 1025px) {
+		left: 50%;
+		top: 105%;
+		right: auto;
+		height: auto;
+		width: 1000px;
+		height: 90%;
+		margin: 0 0 0 -500px;
+		padding: 0;
+		border-radius: 3px;
+		box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+		overflow: hidden;
+
+		&[showing] {
+			transform: translateY(-112.5%);
+
+			& ~ * {
+				opacity: 0.1;
+				pointer-events: none;
+			}
+		}
+	}
+
 	.error {
 		position: absolute;
 		bottom: 20px;
