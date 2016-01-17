@@ -334,6 +334,9 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	/** Issue a friend request */
 	peach.acceptFriendRequest = (id, callback) => api.post(`/friend-request/${enc(id)}/accept`, cb(callback));
 
+	/** Deny a friend request */
+	peach.denyFriendRequest = (id, callback) => api.delete(`/friend-request/${enc(id)}`, cb(callback));
+
 	if (init) setTimeout(peach.init, 1);
 	return peach;
 };

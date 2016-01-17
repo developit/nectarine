@@ -19,7 +19,12 @@ peach.on('login', () => {
 	updateConnectionsTimer = setInterval(updateConnections, 60000);
 });
 
+let lastUpdate;
 export function updateConnections() {
+	let now = Date.now();
+	if (lastUpdate && (now-lastUpdate)<5000) return;
+	lastUpdate = now;
+
 	peach.connections( (err, { connections, inboundFriendRequests, outboundFriendRequests }) => {
 		store.setState({ connections, inboundFriendRequests, outboundFriendRequests });
 	});
