@@ -14,14 +14,25 @@ export default class Profile extends Component {
 	componentDidMount() {
 		this.update();
 		on('refresh', this.update);
+		on('did-post', this.updateIfMe);
 	}
 
 	componentWillUnmount() {
 		off('refresh', this.update);
+		off('did-post', this.updateIfMe);
 	}
 
 	componentWillReceiveProps({ id }) {
 		if (id!==this.state.id) this.update(id);
+	}
+
+	@bind
+	updateIfMe() {
+		let { id } = this.props,
+			me = peach.store.getState().profile.id;
+		if (id==='me' || id===me) {
+			this.update();
+		}
 	}
 
 	@bind

@@ -39,18 +39,20 @@ export default class Create extends Component {
 
 		let post = [];
 
-		text = text.replace(/^gif\s+([^\s]+)/i, '');
+		text = text.replace(/^gif\s+[^\s]+\s*/i, '');
 		if (text) {
 			post.push({ text, type });
 		}
 
 		if (images && (selectedMagic || selectedMagic===0)) {
 			let img = images[selectedMagic].images.downsized;
+			//`https://media3.giphy.com/media/${encodeURIComponent(img.id)}/giphy.gif`;
+
 			post.push({
-				type: 'image',
+				type: 'gif',
 				src: img.url,
-				width: Math.round(img.width),
-				height: Math.round(img.height)
+				width: img.width,
+				height: img.height
 			});
 		}
 
@@ -59,8 +61,9 @@ export default class Create extends Component {
 		this.setState({ loading:true });
 		peach.post(post, (error, result) => {
 			this.setState({ loading:false });
-			if (error) this.setState({ error });
-			else this.close();
+			if (error) return this.setState({ error });
+			this.close();
+			emit('did-post');
 		});
 	}
 
