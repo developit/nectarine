@@ -8,7 +8,7 @@ setInterval(() => {
 
 function updateVisibility(el) {
 	let visible = inViewport(el),
-		wasVisible = el._visible || false;	// && el.hasAttribute('visible');
+		wasVisible = el._visible!==false;	// && el.hasAttribute('visible');
 	if (visible!==wasVisible) {
 		el._visible = visible;
 		el.style.visibility = visible ? 'visible' : 'hidden';
