@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { Layout } from 'preact-mdl';
+import 'optimized-visibility';
 import LoadingScreen from './loading-screen';
 import Header from './header';
 import Sidebar from './sidebar';

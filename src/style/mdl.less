@@ -104,9 +104,13 @@ header {
 }
 
 
-.mdl-button[disabled] {
-	opacity: 0.5;
-	pointer-events: none;
+.mdl-button {
+	will-change: initial !important;
+
+	&[disabled] {
+		opacity: 0.5;
+		pointer-events: none;
+	}
 }
 
 
