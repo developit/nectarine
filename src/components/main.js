@@ -7,6 +7,7 @@ import { Connections, ExploreConnections } from './connections';
 import Profile from './profile';
 import Notifications from './notifications';
 import Settings from './settings';
+import store from '../store';
 import { emit, on, off } from '../pubsub';
 
 export default class App extends Component {
@@ -16,10 +17,23 @@ export default class App extends Component {
 
 	componentWillMount() {
 		on('go', this.go);
+		store.subscribe(this.updateBackground);
+		this.updateBackground(store.getState());
 	}
 
 	componentWillUnmount() {
 		off('go', this.go);
+		store.unsubscribe(this.updateBackground);
+	}
+
+	@bind
+	updateBackground({ prefs }) {
+		let wb = prefs.plainBackground || false;
+		if (wb!==this.plainBackground) {
+			this.plainBackground = wb;
+			if (wb) this.base.setAttribute('plain-background', true);
+			else this.base.removeAttribute('plain-background');
+		}
 	}
 
 	@bind

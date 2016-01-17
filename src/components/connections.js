@@ -39,7 +39,7 @@ export class Connections extends Component {
 			{ connections } = peach.store.getState();
 		this.lastUpdate = Date.now();
 
-		if (!this.explore && !force && connections) {
+		if (!this.explore && !force && connections && connections.length) {
 			// seed the cache
 			connections.forEach(peach.cacheStream);
 			this.setState({ loading:false, connections });
