@@ -51,20 +51,22 @@ export function init() {
 }
 
 function requestPermission() {
-	if (Notification.permission!=='granted') {
-		Notification.requestPermission( permission => {
-			if (permission!=='granted') {
-				let { prefs={} } = store.getState();
-				prefs.showNotifications = false;
-				store.setState({ prefs });
-			}
-		});
-	}
+	try {
+		if (Notification.permission!=='granted') {
+			Notification.requestPermission( permission => {
+				if (permission!=='granted') {
+					let { prefs={} } = store.getState();
+					prefs.showNotifications = false;
+					store.setState({ prefs });
+				}
+			});
+		}
+	} catch(err) {}
 }
 
 function allowed() {
 	let { prefs } = store.getState();
-	return (!prefs || prefs.showNotifications!==false) && Notification.permission==='granted';
+	return (!prefs || prefs.showNotifications!==false) && window.Notification && window.Notification.permission==='granted';
 }
 
 function findNew(newArr, oldArr) {
@@ -86,16 +88,18 @@ let toId = ({ id, createdTime, body }) => (id || `${body.postID}-${createdTime}`
 let toDisplayName = ({ stream, body }) => (stream || body && body.authorStream || EMPTY).displayName;
 
 export function notify(title, body, url) {
-	if (!allowed()) return;
+	if (!allowed() || !window.Notification) return;
 
-	let n = new Notification(title, {
-		icon: '/assets/icon-300.png',
-		tag: 'peach',
-		body
-	});
-	n.onclick = () => {
-		n.close();
-		window.focus();
-		if (url) emit('go', url);
-	};
+	try {
+		let n = new Notification(title, {
+			icon: '/assets/icon-300.png',
+			tag: 'peach',
+			body
+		});
+		n.onclick = () => {
+			n.close();
+			window.focus();
+			if (url) emit('go', url);
+		};
+	} catch(err) {}
 }
