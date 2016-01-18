@@ -4,8 +4,6 @@ import { Card, Layout, TextField, Button, Icon } from 'preact-mdl';
 import peach from '../peach';
 import { emit } from '../pubsub';
 
-const NOOP = ()=>{};
-
 export default class Login extends Component {
 	state = {
 		type: 'register'

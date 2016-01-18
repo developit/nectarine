@@ -5,8 +5,6 @@ import Post from './post';
 import peach, { updateConnections } from '../peach';
 import { on, off, emit } from '../pubsub';
 
-const UPDATE_INTERVAL = 30;
-
 const toId = ({ id, createdTime, body }) => (id || `${body.postID}-${createdTime}`);
 
 export default class Stream extends Component {
