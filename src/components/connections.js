@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { Card, Button, Icon } from 'preact-mdl';
 import { Link } from 'preact-router';
-import { bind, memoize } from 'decko';
+import { bind, memoize, debounce } from 'decko';
 import Post from './post';
 import LoadingScreen from './loading-screen';
 import peach from '../peach';
@@ -64,6 +64,15 @@ export class Connections extends Component {
 		return () => emit('go', { url });
 	}
 
+	@debounce
+	handleScroll() {
+		emit('update-visibility');
+	}
+
+	componentDidUpdate() {
+		emit('update-visibility');
+	}
+
 	render({}, { loading, error, connections=[] }) {
 		if (!connections.length && !loading) return (
 			<div class="explore view">
@@ -85,7 +94,7 @@ export class Connections extends Component {
 		}
 
 		return (
-			<div class="explore view">
+			<div class="explore view" onScroll={this.handleScroll}>
 				<div class="inner">
 					{ connections.map( connection => (
 						<Connection {...connection} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
@@ -123,7 +132,7 @@ export class Connection extends Component {
 
 	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc }) {
 		return (
-			<Card shadow={2} key={key} class="centered stream-connection" onClick={this.onClick}>
+			<Card shadow={2} key={key} class="centered stream-connection" optimized-visibility onClick={this.onClick}>
 				<Card.Title>
 					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>

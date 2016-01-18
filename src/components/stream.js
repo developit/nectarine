@@ -3,7 +3,7 @@ import { Button } from 'preact-mdl';
 import { bind, debounce } from 'decko';
 import Post from './post';
 import peach from '../peach';
-import { on, off } from '../pubsub';
+import { on, off, emit } from '../pubsub';
 
 const UPDATE_INTERVAL = 30;
 
@@ -27,9 +27,14 @@ export default class Stream extends Component {
 		});
 	}
 
+	@debounce
+	handleScroll() {
+		emit('update-visibility');
+	}
+
 	render({}, { error, stream={} }) {
 		return (
-			<div class="stream view">
+			<div class="stream view view-scroll" onScroll={this.handleScroll}>
 				<div class="posts">
 					<div class="posts-inner">{
 						(stream.activityItems || []).map( m => <Post minimal {...m} /> )

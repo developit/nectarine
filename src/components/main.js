@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { Layout, Button, Icon } from 'preact-mdl';
 import Router, { route } from 'preact-router';
-import { bind } from 'decko';
+import { bind, debounce } from 'decko';
 import Stream from './stream';
 import { Connections, ExploreConnections } from './connections';
 import Profile from './profile';
@@ -36,9 +36,14 @@ export default class App extends Component {
 		emit('create');
 	}
 
+	@debounce
+	handleScroll() {
+		emit('update-visibility');
+	}
+
 	render() {
 		return (
-			<Layout.Content id="content">
+			<Layout.Content id="content" onScroll={this.handleScroll}>
 				<Router onChange={::this.onRoute}>
 					<Connections path="/" />
 					<ExploreConnections path="/explore" />

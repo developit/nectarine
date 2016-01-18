@@ -92,6 +92,11 @@ export default class Profile extends Component {
 		alert('This person follows you.');
 	}
 
+	@debounce
+	handleScroll() {
+		emit('update-visibility');
+	}
+
 	render({}, { error, loading, loadingNew, stream, followPending=false }) {
 		if (error) return (
 			<div class="profile view">
@@ -113,46 +118,48 @@ export default class Profile extends Component {
 		let profile = peach.store.getState().profile || {},
 			isMe = stream.name===profile.name;
 		return (
-			<div class="profile view">
-				<header>
-					<div class="avatar" style={stream.avatarSrc ? `background-image: url(${stream.avatarSrc});` : null} />
+			<div class="profile view view-scroll" onScroll={this.handleScroll}>
+				<div class="inner">
+					<header>
+						<div class="avatar" style={stream.avatarSrc ? `background-image: url(${stream.avatarSrc});` : null} />
 
-					<h4>@{ stream.name }</h4>
-					<h3>{ stream.displayName }</h3>
+						<h4>@{ stream.name }</h4>
+						<h3>{ stream.displayName }</h3>
 
-					{ isMe ? null : (
-						<div class="opts">
-							{ isMe ? (
-								<span class="tag is-you">You!</span>
-							) : (
-								<Button icon primary onClick={this.wave}>👋</Button>
-							) }
-							{ !isMe && stream.followsYou ? (
-								<Button icon primary onClick={this.followsYou}>
-									<Icon class="follows-you" icon="people" title="Follows You" />
-								</Button>
-							) : null }
-							{ stream.isPublic ? null : (
-								<Button icon primary onClick={this.private}>
-									<Icon class="private" icon="lock" title="Private" />
-								</Button>
-							) }
-							{ stream.youFollow ? (
-								<Button primary class="unfollow" onClick={this.unfollow}>Unfollow</Button>
-							) : (
-								<Button primary class="follow" disabled={followPending || null} onClick={this.follow}>Follow</Button>
-							) }
-						</div>
-					) }
-				</header>
+						{ isMe ? null : (
+							<div class="opts">
+								{ isMe ? (
+									<span class="tag is-you">You!</span>
+								) : (
+									<Button icon primary onClick={this.wave}>👋</Button>
+								) }
+								{ !isMe && stream.followsYou ? (
+									<Button icon primary onClick={this.followsYou}>
+										<Icon class="follows-you" icon="people" title="Follows You" />
+									</Button>
+								) : null }
+								{ stream.isPublic ? null : (
+									<Button icon primary onClick={this.private}>
+										<Icon class="private" icon="lock" title="Private" />
+									</Button>
+								) }
+								{ stream.youFollow ? (
+									<Button primary class="unfollow" onClick={this.unfollow}>Unfollow</Button>
+								) : (
+									<Button primary class="follow" disabled={followPending || null} onClick={this.follow}>Follow</Button>
+								) }
+							</div>
+						) }
+					</header>
 
-				<div class="posts">
-					<div class="posts-inner">{
-						(stream.posts || []).slice().reverse().map( post => <Post authorId={stream.id} {...post} /> )
-					}</div>
+					<div class="posts">
+						<div class="posts-inner">{
+							(stream.posts || []).slice().reverse().map( post => <Post authorId={stream.id} {...post} /> )
+						}</div>
+					</div>
+
+					{ loading ? <LoadingScreen overlay={false} /> : null }
 				</div>
-
-				{ loading ? <LoadingScreen overlay={false} /> : null }
 			</div>
 		);
 	}
