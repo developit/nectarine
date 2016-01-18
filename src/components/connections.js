@@ -132,7 +132,7 @@ export class Connection extends Component {
 
 	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc }) {
 		return (
-			<Card shadow={2} key={key} class="centered stream-connection" optimized-visibility onClick={this.onClick}>
+			<Card shadow={2} key={key} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
 					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
