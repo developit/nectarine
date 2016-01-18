@@ -1,5 +1,6 @@
 import store from './store';
 import peachClient from 'peach-client';
+import { parallel } from 'praline';
 
 let peach = peachClient({
 	url: 'https://api.nectarine.rocks',		// Open-Source proxy, see: git.io/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
@@ -25,8 +26,11 @@ export function updateConnections() {
 	if (lastUpdate && (now-lastUpdate)<5000) return;
 	lastUpdate = now;
 
-	peach.connections( (err, { connections, inboundFriendRequests, outboundFriendRequests }) => {
-		store.setState({ connections, inboundFriendRequests, outboundFriendRequests });
+	parallel([
+		peach.activity,
+		peach.connections
+	], (err, { activityItems=[] }={}, { connections, inboundFriendRequests, outboundFriendRequests }) => {
+		store.setState({ activityItems, connections, inboundFriendRequests, outboundFriendRequests });
 	});
 }
 peach.updateConnections = updateConnections;

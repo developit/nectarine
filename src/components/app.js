@@ -10,12 +10,18 @@ import Wave from './wave';
 import Main from './main';
 import Login from './login';
 import peach from '../peach';
+import { init } from '../notify';
 import { on, off } from '../pubsub';
 
 class LoggedIn extends Component {
 	shouldComponentUpdate() {
 		return false;
 	}
+
+	componentDidMount() {
+		init();
+	}
+
 	render() {
 		return (
 			<Layout fixed-header={true} js={false}>

@@ -58,7 +58,7 @@ export default class Preferences extends Component {
 		location.href = '/';
 	}
 
-	render({ }, { limit, plainBackground }) {
+	render({ }, { limit, plainBackground, showNotifications=true }) {
 		return (
 			<Card shadow="2" class="centered">
 				<Card.Title>
@@ -70,6 +70,9 @@ export default class Preferences extends Component {
 				<Card.Text>
 					<form action="javascript:;">
 						<CheckBox checked={limit} onChange={this.linkState('limit')}>Limit to 50 unread updates</CheckBox>
+					</form>
+					<form action="javascript:;">
+						<CheckBox checked={showNotifications} onChange={this.linkState('showNotifications')}>Show Notifications?</CheckBox>
 					</form>
 					<form action="javascript:;">
 						<CheckBox checked={plainBackground} onChange={this.linkState('plainBackground')}>Plain background</CheckBox>
