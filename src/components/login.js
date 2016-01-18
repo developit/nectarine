@@ -27,7 +27,12 @@ export default class Login extends Component {
 			return this.setState({ error:`Invalid ${i}` });
 		}
 		peach[type](creds, (error, session) => {
-			if (error) return this.setState({ error });
+			if (error) {
+				if (String(error).match(/generic db error/i)) {
+					error = 'Name or email is invalid or already registered.';
+				}
+				return this.setState({ error });
+			}
 
 			if (type==='register') {
 				// auto-follow @nectarineapp so that we can see "friends of friends" in the explore tab
@@ -65,8 +70,12 @@ export default class Login extends Component {
 	@bind
 	checkEmail() {
 		let { type, email } = this.state;
-		peach.isEmailRegistered({ email }, (error, isRegistered) => {
-			console.log(error, isRegistered);
+		peach.isEmailRegistered({ email }, (err, data) => {
+			let taken = !!(data && data.error && data.error.code===1201 || String(err).match(/already exists/i)),
+				{ type } = this.state;
+			if ( type==='login' !== taken ) {
+				this.switchMode();
+			}
 		});
 	}
 
@@ -91,52 +100,54 @@ export default class Login extends Component {
 					</Layout.HeaderRow>
 				</Layout.Header>
 
-				<form action="javascript:" onSubmit={this.submit}>
+				<Layout.Content>
 					<Card shadow={2} class="centered">
 						<Card.Text>
-							<h4>{ type==='register' ? 'Sign Up' : 'Sign In' }</h4>
+							<form action="javascript:" onSubmit={this.submit}>
+								<h4>{ type==='register' ? 'Sign Up' : 'Sign In' }</h4>
 
-							<div class={{error:1, showing:error}}>{ error || null }</div>
+								<div class={{error:1, showing:error}}>{ error || null }</div>
 
-							<div style={{ maxHeight: type==='register'?100:0, transition:'all 500ms ease', overflow:'hidden' }}>
+								<div style={{ maxHeight: type==='register'?100:0, transition:'all 500ms ease', overflow:'hidden' }}>
+									<TextField
+										label="Username"
+										floating-label
+										pattern="^[a-z0-9_.-]+$"
+										required={type==='register' && !!error || null}
+										onInput={ this.linkState('name') }
+										value={ name } />
+								</div>
+
 								<TextField
-									label="Username"
+									label="Email"
+									type="email"
+									required={!!error || null}
 									floating-label
-									pattern="^[a-z0-9_.-]+$"
-									required={type==='register' && !!error || null}
-									onInput={ this.linkState('name') }
+									onInput={ this.linkState('email') }
 									onChange={ this.checkEmail }
-									value={ name } />
-							</div>
+									value={ email } />
 
-							<TextField
-								label="Email"
-								type="email"
-								required={!!error || null}
-								floating-label
-								onInput={ this.linkState('email') }
-								value={ email } />
+								<TextField
+									type="password"
+									label="Password"
+									required={!!error || null}
+									floating-label
+									onInput={ this.linkState('password') }
+									value={ password } />
 
-							<TextField
-								type="password"
-								label="Password"
-								required={!!error || null}
-								floating-label
-								onInput={ this.linkState('password') }
-								value={ password } />
+								<button-bar>
+									<Button raised colored onClick={this.submit}>
+										{ type==='register' ? 'Sign Up' : 'Log In' }
+									</Button>
+								</button-bar>
 
-							<button-bar>
-								<Button raised colored onClick={this.submit}>
-									{ type==='register' ? 'Sign Up' : 'Log In' }
-								</Button>
-							</button-bar>
-
-							<button-bar>
-								<a onClick={this.switchMode}>{ type==='register' ? 'Already have an account?' : 'Need to sign up?' }</a>
-							</button-bar>
+								<button-bar>
+									<a onClick={this.switchMode}>{ type==='register' ? 'Already have an account?' : 'Need to sign up?' }</a>
+								</button-bar>
+							</form>
 						</Card.Text>
 					</Card>
-				</form>
+				</Layout.Content>
 			</Layout>
 		);
 
