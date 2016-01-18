@@ -37,22 +37,27 @@ export default class Profile extends Component {
 
 	@bind
 	update(id=this.props.id) {
+		let myId = peach.store.getState().profile.id;
 		id = id || 'me';
-		if (id==='me') id = peach.store.getState().profile.id;
+		if (id==='me') id = myId;
 
 		if (this.state.loading===true && this.state.id===id) return;
 
 		let cached = peach.streamCache[id],
-			loadingNew = id!==this.state.id && !cached,
+			different = id!==this.state.id,
+			loadingNew = different && !cached,
 			c = ++this._counter;
+
+		if (different) this.scrollToTop();
 
 		this.setState({ id, error:null, loading: true, loadingNew, stream:cached || EMPTY, followPending:false });
 
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
 			if (c!==this._counter) return;
 			this.setState({ loading:false, loadingNew:false, error, stream });
-			this.scrollToTop();
-			peach.markAsRead(id);
+			if (id!=='me' && id!==myId) {
+				peach.markAsRead(id);
+			}
 		});
 	}
 
@@ -94,6 +99,10 @@ export default class Profile extends Component {
 
 	@debounce
 	handleScroll() {
+		emit('update-visibility');
+	}
+
+	componentDidUpdate() {
 		emit('update-visibility');
 	}
 

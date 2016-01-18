@@ -11,10 +11,10 @@ export function updateAllVisibility() {
 
 	let now = Date.now();
 	if (!lastUpdated || (now-lastUpdated)>1000) {
+		lastUpdated = now;
 		elements = document.querySelectorAll('[optimized-visibility]');
 	}
 
-	// let el = document.querySelectorAll('[optimized-visibility]');
 	cache.wh = window.innerHeight;
 	cache.ww = window.innerWidth;
 
@@ -23,19 +23,21 @@ export function updateAllVisibility() {
 	}
 
 	// console.log( [].filter.call(elements, p => p._visible).length + ' of '+elements.length);
-	updateTimer = setTimeout(updateAllVisibility, 5000);
+	updateTimer = setTimeout(updateAllVisibility, 1500);
 }
 
 function updateVisibility(el) {
 	let visible = inViewport(el),
-		wasVisible = el._visible!==false;	// && el.hasAttribute('visible');
+		wasVisible = el.hasAttribute('visible');	// && el.hasAttribute('visible');
 	if (visible!==wasVisible) {
-		el._visible = visible;
-		el.style.visibility = visible ? '' : 'hidden';
-		if (el.hasAttribute('more-optimized')) {
-			if (visible) el.setAttribute('visible', true);
-			else el.removeAttribute('visible');
-		}
+		if (visible) el.setAttribute('visible', true);
+		else el.removeAttribute('visible');
+		//el._visible = visible;
+		//el.style.visibility = visible ? '' : 'hidden';
+		//if (el.hasAttribute('more-optimized')) {
+		//	if (visible) el.setAttribute('visible', true);
+		//	else el.removeAttribute('visible');
+		//}
 	}
 }
 
