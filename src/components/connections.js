@@ -97,7 +97,7 @@ export class Connections extends Component {
 			<div class="explore view" onScroll={this.handleScroll}>
 				<div class="inner">
 					{ connections.map( connection => (
-						<Connection {...connection} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
+						<Connection {...connection} meta={!this.explore} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
 					)) }
 					{ !connections.length && loading ? <LoadingScreen overlay /> : null }
 				</div>
@@ -113,9 +113,14 @@ export class ExploreConnections extends Connections {
 
 
 export class Connection extends Component {
-	shouldComponentUpdate(props) {
+	constructor() {
+		super();
+		this.read = null;
+	}
+
+	shouldComponentUpdate(props, { read }) {
 		for (let i in props) if (i!=='posts' && i!=='_fetched' && props[i]!==this.props[i]) return true;
-		return false;
+		return read!==this.read;
 	}
 
 	@bind
@@ -130,12 +135,26 @@ export class Connection extends Component {
 		this.props.onClick(e);
 	}
 
-	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc }) {
+	@bind
+	markRead(e) {
+		peach.markAsRead(this.props.id);
+		this.setState({ read:true });
+		if (e) e.stopPropagation();
+		return false;
+	}
+
+	render({ id, key, displayName, posts=[], unreadPostCount=0, avatarSrc, meta }, { read }) {
+		this.read = read;
 		return (
-			<Card shadow={2} key={key} class="centered stream-connection" onClick={this.onClick}>
+			<Card shadow={2} key={key} read={read || null} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
 					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
+					{ meta ? (
+						<div class="connection-meta">
+							<Button icon onClick={this.markRead}><Icon icon="done" /></Button>
+						</div>
+					) : null }
 				</Card.Title>
 				<Card.Text>
 					{ posts.length ? (

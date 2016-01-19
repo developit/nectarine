@@ -5,6 +5,8 @@ import { bind } from 'decko';
 import { on, off, emit } from '../../pubsub';
 import peach from '../../peach';
 
+const toId = ({ id, createdTime, body }) => (id || `${body.postID}-${createdTime}`);
+
 export default class Notifications extends Component {
 	componentDidMount() {
 		peach.store.subscribe(this.handleUpdate);
@@ -21,7 +23,10 @@ export default class Notifications extends Component {
 	@bind
 	handleUpdate({ inboundFriendRequests }) {
 		if (inboundFriendRequests && inboundFriendRequests!==this.state.inboundFriendRequests) {
-			this.setState({ inboundFriendRequests });
+			let ids = inboundFriendRequests.map(toId).join(',');
+			if (ids!==this.state.ids) {
+				this.setState({ ids, inboundFriendRequests });
+			}
 		}
 	}
 

@@ -55,10 +55,12 @@ export default class Profile extends Component {
 		peach.user.stream({ id, optimistic:true }, (error, stream) => {
 			if (c!==this._counter) return;
 			this.setState({ loading:false, loadingNew:false, error, stream });
-			if (id!=='me' && id!==myId) {
-				peach.markAsRead(id);
-			}
 		});
+
+		// in parallel
+		if (id!=='me' && id!==myId) {
+			peach.markAsRead(id);
+		}
 	}
 
 	@debounce
