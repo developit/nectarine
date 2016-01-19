@@ -296,7 +296,7 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	/** Set your display name. Pass {displayName:"foo"} */
 	peach.setDisplayName = method('put', '/stream/displayName');
 
-	/** Set your avatar URL. Pass {avatarSrc:"http://..."} */
+	/** Set your avatar URL. Pass {avatarSrc:"https://..."} */
 	//peach.setAvatar = method('put', '/stream/avatarSrc');
 	peach.setAvatar = (avatarSrc, callback=EMPTY_FUNC) => {
 		api.put({ url:'/stream/avatarSrc', body:{ avatarSrc } }, (err, res, data={}) => {
@@ -316,8 +316,8 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 			data = data && data.data || data;
 			if (!err && !data) err = 'Invalid response';
 			if (err) return callback(err);
-			let url = data.link || `http://i.imgur.com/${data.id}.png`;
-			if (typeof url==='string') url = url.replace(/^https:\/\//g, 'http://');
+			let url = data.link || `https://i.imgur.com/${data.id}.png`;
+			if (typeof url==='string') url = url.replace(/^http:\/\//g, 'https://');
 			peach.setAvatar(url, callback);
 		});
 	};

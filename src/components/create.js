@@ -78,7 +78,7 @@ export default class Create extends Component {
 		this.gifTerms = terms;
 		// console.log(terms);
 		if (!terms) return this.setState({ selectedMagic:null, images: null });
-		fetch(`http://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(terms)}&api_key=dc6zaTOxFJmzC`)
+		fetch(`https://api.giphy.com/v1/gifs/search?q=${encodeURIComponent(terms)}&api_key=dc6zaTOxFJmzC`)
 			.then( r => r.json() )
 			.then( ({ data=[] }) => {
 				this.setState({
