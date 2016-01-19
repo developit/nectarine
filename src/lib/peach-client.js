@@ -316,8 +316,8 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 			data = data && data.data || data;
 			if (!err && !data) err = 'Invalid response';
 			if (err) return callback(err);
-			let url = data.link || `https://i.imgur.com/${data.id}.png`;
-			if (typeof url==='string') url = url.replace(/^http:\/\//g, 'https://');
+			let url = data.link || `http://i.imgur.com/${data.id}.png`;
+			if (typeof url==='string') url = url.replace(/^https:\/\//g, 'http://');
 			peach.setAvatar(url, callback);
 		});
 	};
