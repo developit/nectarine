@@ -58,7 +58,7 @@ export default class App extends Component {
 		store.unsubscribe(this.updateBackground);
 	}
 
-	@debounce(200)
+	@debounce(500)
 	updateVisibility() {
 		updateAllVisibility();
 	}
