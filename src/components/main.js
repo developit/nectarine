@@ -4,6 +4,7 @@ import Router, { route } from 'preact-router';
 import { bind, debounce } from 'decko';
 import Stream from './stream';
 import { Connections, ExploreConnections } from './connections';
+import Friends from './friends';
 import Profile from './profile';
 import Notifications from './notifications';
 import Settings from './settings';
@@ -46,6 +47,7 @@ export default class App extends Component {
 			<Layout.Content id="content" onScroll={this.handleScroll}>
 				<Router onChange={::this.onRoute}>
 					<Connections path="/" />
+					<Friends path="/friends" />
 					<ExploreConnections path="/explore" />
 					<Stream path="/stream" />
 					<Profile path="/profile" id="me" />

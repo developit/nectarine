@@ -1,5 +1,6 @@
 @import 'helpers';
 
+.friends-list,
 .profile,
 .stream {
 
@@ -102,6 +103,7 @@
 }
 
 
+.friend,
 .post {
 	margin: 10px;
 	padding: 30px 10px 10px;
@@ -137,5 +139,29 @@
 		background-repeat: no-repeat;
 		border-radius: 50%;
 		cursor: pointer;
+	}
+}
+
+.friend {
+	cursor: pointer;
+
+	.avatar {
+		float: none;
+	}
+
+	h2 {
+		font-size: 150%;
+		margin: 0 0 10px;
+		line-height: 1em;
+
+		em {
+			font-size: 70%;
+			color: #777;
+			font-style: normal;
+		}
+
+		footer {
+			color: #555;
+		}
 	}
 }

@@ -93,16 +93,31 @@ export class Connections extends Component {
 			connections.length = 50;
 		}
 
-		return (
-			<div class="explore view" onScroll={this.handleScroll}>
-				<div class="inner">
-					{ connections.map( connection => (
-						<Connection {...connection} meta={!this.explore} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
-					)) }
-					{ !connections.length && loading ? <LoadingScreen overlay /> : null }
+		if ( connections.length ){
+			return (
+				<div class="explore view" onScroll={this.handleScroll}>
+					<div class="inner">
+						{ connections.map( connection => (
+							<Connection {...connection} meta={!this.explore} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
+						)) }
+						{ !connections.length && loading ? <LoadingScreen overlay /> : null }
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}
+
+		else {
+			return (
+				<div class="explore view">
+					<div class="inner">
+						<div class="nothing">
+							<p>Nothing new here.</p>
+							<p>Want to see <Link href="/friends">older posts from friends?</Link></p>
+						</div>
+					</div>
+				</div>
+			);
+		}
 	}
 }
 
