@@ -305,6 +305,13 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	};
 
 	peach.uploadAvatar = (image, callback=EMPTY_FUNC) => {
+		peach.uploadImage(image, (err, { url }) => {
+			if (err) return callback(err);
+			peach.setAvatar(url, callback);
+		});
+	};
+
+	peach.uploadImage = (image, callback=EMPTY_FUNC) => {
 		let body = new FormData();
 		body.append('type', 'file');
 		body.append('image', image);
@@ -318,7 +325,7 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 			if (err) return callback(err);
 			let url = data.link || `https://i.imgur.com/${data.id}.png`;
 			if (typeof url==='string') url = url.replace(/^http:\/\//g, 'https://');
-			peach.setAvatar(url, callback);
+			callback(null, { url, ...data });
 		});
 	};
 
