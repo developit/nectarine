@@ -9,7 +9,8 @@
     "prestart": "npm run build -s",
     "start": "http-server build",
     "deploy-old": "gh-pages -d build",
-    "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d $(cat CNAME)"
+    "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d $(cat CNAME)",
+    "test": "eslint src"
   },
   "author": "Jason Miller <jason@developit.ca>",
   "license": "ISC",
@@ -27,8 +28,10 @@
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",
     "babel-core": "^5.8.34",
+    "babel-eslint": "^4.1.6",
     "babel-loader": "^5.4.0",
     "css-loader": "^0.23.1",
+    "eslint": "^1.10.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "gh-pages": "^0.8.0",
     "html-webpack-plugin": "^1.7.0",
