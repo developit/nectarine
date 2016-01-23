@@ -135,33 +135,52 @@
 		margin: 0 7px;
 		background-color: #CCC;
 		background-position: center;
-		background-size: contain;
+		background-size: cover;
 		background-repeat: no-repeat;
 		border-radius: 50%;
 		cursor: pointer;
+	}
+
+	&[unread-count] .avatar {
+		box-shadow: 0 0 1px 2px #25d87a;
 	}
 }
 
 .friend {
 	cursor: pointer;
+	padding: 20px 10px;
 
 	.avatar {
-		float: none;
+		margin-right: 20px;
+		width: 64px;
+		height: 64px;
+		float: left;
 	}
 
 	h2 {
-		font-size: 150%;
-		margin: 0 0 10px;
-		line-height: 1em;
+		font-size: 130%;
+		margin: 10px 0;
+		padding: 0;
+		line-height: 1.1em;
+	}
 
-		em {
-			font-size: 70%;
-			color: #777;
-			font-style: normal;
-		}
+	h4 {
+		font-size: 90%;
+		margin: 0 0 5px;
+		padding: 0;
+		line-height: 1.1em;
+		color: #777;
+	}
 
-		footer {
-			color: #555;
-		}
+	footer {
+		color: #555;
+	}
+
+	.unread-count {
+		color: #777;
+	}
+
+	&:not([unread-count]) .unread-count {
+		display: none;
 	}
 }
