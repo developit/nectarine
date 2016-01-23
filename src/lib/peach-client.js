@@ -293,6 +293,9 @@ export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	/** Set your @username. Pass {name:"foo"} */
 	peach.setName = method('put', '/stream/name');
 
+	/** Set your bio. Pass {bio:"foo"} */
+	peach.setBio = method('put', '/stream/bio');
+
 	/** Set your display name. Pass {displayName:"foo"} */
 	peach.setDisplayName = method('put', '/stream/displayName');
 

@@ -136,6 +136,7 @@ export default class Profile extends Component {
 
 						<h4>@{ stream.name }</h4>
 						<h3>{ stream.displayName }</h3>
+						<small>{ stream.bio || null }</small>
 
 						{ isMe ? null : (
 							<div class="opts">

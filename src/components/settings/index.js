@@ -13,9 +13,9 @@ export default class Settings extends Component {
 	@bind
 	update() {
 		this.setState({ loading: true });
-		peach.user.me( (error, { name, displayName, avatarSrc, isPublic }) => {
+		peach.user.me( (error, { name, displayName, bio, avatarSrc, isPublic }) => {
 			let visibility = { friendsOnly: isPublic };
-			this.setState({ loading:false, error, visibility, name, displayName, avatarSrc });
+			this.setState({ loading:false, error, visibility, name, displayName, bio, avatarSrc });
 		});
 	}
 
@@ -37,6 +37,11 @@ export default class Settings extends Component {
 	@bind
 	setDisplayName() {
 		this.set('displayName');
+	}
+
+	@bind
+	setBio() {
+		this.set('bio');
 	}
 
 	@bind
@@ -74,7 +79,7 @@ export default class Settings extends Component {
 		});
 	}
 
-	render({}, { loading, error, visibility={}, name, displayName, avatarSrc }) {
+	render({}, { loading, error, visibility={}, name, displayName, bio, avatarSrc }) {
 		return (
 			<div class="settings">
 				<Card shadow="2" class="centered has-image">
@@ -107,6 +112,17 @@ export default class Settings extends Component {
 								value={name}
 								onInput={this.linkState('name')} />
 							<Button colored raised onClick={this.setName}>Set Name</Button>
+						</form>
+
+						<form action="javascript:">
+							<TextField
+								floating-label
+								multiline
+								label="Bio"
+								value={bio}
+								maxlength="200"
+								onInput={this.linkState('bio')} />
+							<Button colored raised onClick={this.setBio}>Set Bio</Button>
 						</form>
 
 						<form action="javascript:">
