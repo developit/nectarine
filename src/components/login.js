@@ -48,7 +48,7 @@ export default class Login extends Component {
 						body: JSON.stringify({ name }),
 						headers: {'Content-Type':'application/json' }
 					}, () => {
-						clearTimeout(timeout);
+						clearTimeout(timer);
 						if (timedOut) emit('refresh');
 						else emit('go', '/explore');
 					});

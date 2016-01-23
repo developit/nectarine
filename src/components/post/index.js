@@ -3,6 +3,7 @@ import { TextField, Button, Icon, Menu } from 'preact-mdl';
 import neatime from 'neatime';
 import { bind } from 'decko';
 import { emit } from '../../pubsub';
+import peach from '../../peach';
 import Comment from './comment';
 import { renderItem } from './renderers';
 

@@ -55,7 +55,7 @@ export default class App extends Component {
 
 	componentWillUnmount() {
 		off('update-visibility', this.updateVisibility);
-		store.unsubscribe(this.updateBackground);
+		peach.store.unsubscribe(this.updateBackground);
 	}
 
 	@debounce(500)

@@ -1,5 +1,7 @@
 import Emitter from 'wildemitter';
 
+/*global ga*/
+
 const pubsub = new Emitter();
 export default pubsub;
 

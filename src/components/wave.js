@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { Layout, Button } from 'preact-mdl';
 import { bind, memoize } from 'decko';
+import peach from '../peach';
 import { on, off, emit } from '../pubsub';
 
 const TYPES = [

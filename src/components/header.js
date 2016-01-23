@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { Layout, Button, Icon, Spinner } from 'preact-mdl';
 import { route } from 'preact-router';
 import { memoize, bind } from 'decko';
-import store from '../store';
+import peach from '../peach';
 import { emit } from '../pubsub';
 
 const REDUCE = ({ connections, inboundFriendRequests, outboundFriendRequests }) =>
@@ -11,7 +11,7 @@ const REDUCE = ({ connections, inboundFriendRequests, outboundFriendRequests }) 
 export default class Header extends Component {
 	constructor() {
 		super();
-		store.subscribe( state => this.setState(REDUCE(state)) );
+		peach.store.subscribe( state => this.setState(REDUCE(state)) );
 
 		this.state.loading = peach.isLoading();
 
@@ -30,7 +30,7 @@ export default class Header extends Component {
 
 	@bind
 	toggleMenu() {
-		//store.setState({ menu:true });
+		//peach.store.setState({ menu:true });
 		emit('menu');
 	}
 

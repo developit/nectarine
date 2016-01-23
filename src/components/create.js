@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { Layout, TextField, Button, Icon, Spinner } from 'preact-mdl';
 import { bind, debounce } from 'decko';
+import peach from '../peach';
 import { on, off, emit } from '../pubsub';
 
 const CLEAN = {

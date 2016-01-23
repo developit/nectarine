@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { route } from 'preact-router';
 import { Layout, Navigation, Button, Icon } from 'preact-mdl';
 import { bind } from 'decko';
-import store from '../store';
+import peach from '../peach';
 import { on, off } from '../pubsub';
 
 export default class Sidebar extends Component {
@@ -11,14 +11,14 @@ export default class Sidebar extends Component {
 	componentDidMount() {
 		on('menu', this.open);
 		on('route', this.close);
-		store.subscribe(this.fromState);
-		this.fromState(store.getState());
+		peach.store.subscribe(this.fromState);
+		this.fromState(peach.store.getState());
 	}
 
 	componentWillUnmount() {
 		off('menu', this.open);
 		off('route', this.close);
-		store.unsubscribe(this.fromState);
+		peach.store.unsubscribe(this.fromState);
 	}
 
 	@bind
@@ -48,7 +48,7 @@ export default class Sidebar extends Component {
 
 	@bind
 	me() {
-		peach.addFriend('developit', () => this.go('/profile/77a03b2c4fa9460ea42ff4000558c18a'))
+		peach.addFriend('developit', () => this.go('/profile/77a03b2c4fa9460ea42ff4000558c18a'));
 		return false;
 	}
 

@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Button, Icon, Menu } from 'preact-mdl';
 import { bind } from 'decko';
 import { renderer } from './renderers';
+import peach from '../../peach';
 import { emit } from '../../pubsub';
 
 export default class Comment extends Component {
