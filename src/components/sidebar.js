@@ -62,6 +62,7 @@ export default class Sidebar extends Component {
 				</Layout.Title>
 				<Navigation>
 					<Link href="/" route={this.go}>Home</Link>
+					<Link href="/friends" route={this.go}>Friends List</Link>
 					<Link href="/explore" route={this.go}>Explore <em>Friends of Friends</em></Link>
 					<Link href="/profile" route={this.go}>My Profile</Link>
 					<Link href="/stream" route={this.go}>Stream</Link>
