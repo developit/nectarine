@@ -39,7 +39,7 @@ export default class Create extends Component {
 
 		let post = [];
 
-		text = text.replace(/^gif\s+[^\s]+\s*/i, '');
+		text = text.replace(/^gif\s+(".*?"|[^\s]+)\s*/i, '');
 		if (text) {
 			post.push({ text, type });
 		}
@@ -68,7 +68,7 @@ export default class Create extends Component {
 	}
 
 	componentDidUpdate({ }, { text='' }) {
-		let p = text.match(/^gif\s+([^\s]+)/i);
+		let p = text.match(/^gif\s+(".*?"|[^\s]+)/i);
 		this.magicGif(p && p[1]);
 	}
 
