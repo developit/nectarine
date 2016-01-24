@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Card, TextField, Button, Icon, Spinner, CheckBox } from 'preact-mdl';
 import Preferences from './preferences';
 import { bind } from 'decko';
+import { parallel } from 'praline';
 import peach from '../../peach';
 import chooseFiles from 'choose-files';
 
@@ -13,8 +14,10 @@ export default class Settings extends Component {
 	@bind
 	update() {
 		this.setState({ loading: true });
-		peach.user.me( (error, { name, displayName, bio, avatarSrc, isPublic }) => {
-			let visibility = { friendsOnly: isPublic };
+		parallel([
+			peach.getVisibility,
+			peach.user.me
+		], (error, visibility, { name, displayName, bio, avatarSrc, isPublic }) => {
 			this.setState({ loading:false, error, visibility, name, displayName, bio, avatarSrc });
 		});
 	}
@@ -93,7 +96,7 @@ export default class Settings extends Component {
 						<div class={{error:1, showing:error}}>{ error || ' ' }</div>
 
 						<form action="javascript:">
-							<CheckBox checked={visibility.friendsOnly} onChange={this.setVisibility}>Visible to Friends Only</CheckBox>
+							<CheckBox checked={visibility.friendsOnly} onClick={this.setVisibility}>Visible to Friends Only</CheckBox>
 						</form>
 
 						<form action="javascript:">
