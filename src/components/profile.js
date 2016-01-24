@@ -5,6 +5,7 @@ import { bind, debounce } from 'decko';
 import { on, off, emit } from '../pubsub';
 import Post from './post';
 import peach from '../peach';
+import parseMessage from 'parse-message';
 
 const EMPTY = {};
 
@@ -136,7 +137,7 @@ export default class Profile extends Component {
 
 						<h4>@{ stream.name }</h4>
 						<h3>{ stream.displayName }</h3>
-						<small>{ stream.bio || null }</small>
+						<small>{ stream.bio && parseMessage(stream.bio) || null }</small>
 
 						{ isMe ? null : (
 							<div class="opts">

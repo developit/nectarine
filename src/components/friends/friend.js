@@ -15,7 +15,7 @@ export default class Friends extends Component {
 				<div class="avatar" style={avatarSrc ? `background-image: url('${avatarSrc}');` : null} />
 				<h2>{displayName} <span class="unread-count">({ unreadPostCount || 0 })</span></h2>
 				<h4>@{name}</h4>
-				<footer>{bio || null}</footer>
+				<footer>{ bio || null}</footer>
 			</div>
 		);
 	}

@@ -32,22 +32,33 @@
 			z-index: 1;
 		}
 
-		h3, h4 {
-			margin: 0;
+		h3, h4, small {
+			margin: 0 130px 0 0;
 			padding: 0;
-			color: #000;
 			text-shadow: 0 1px 0 rgba(255,255,255,0.2);
-			font-weight: 300;
 			text-align: left;
+			font-weight: 300;
+			line-height: 1.1;
+			overflow: hidden;
 		}
 		h3 {
-			font-size: 250%;
-			// padding-top: 25px;
+			font-size: 200%;
+			padding: 5px 0;
+			color: #000;
+			white-space: nowrap;
+			text-overflow: ellipsis;
 		}
 		h4 {
-			padding-top: 5px;
-			opacity: 0.5;
-			font-size: 120%;
+			padding: 22px 0 0;
+			color: #666;
+			font-size: 100%;
+		}
+		small {
+			display: block;
+			color: #666;
+			&:hover {
+				color: #000;
+			}
 		}
 
 		.avatar {
@@ -85,6 +96,10 @@
 			color: #888;
 			font-size: 80%;
 			box-shadow: 0 0 1px rgba(0,0,0,0.5);
+		}
+
+		.follow, .unfollow {
+			display: block;
 		}
 	}
 
@@ -173,7 +188,14 @@
 	}
 
 	footer {
-		color: #555;
+		padding: 10px 0 0;
+		color: #777;
+		font-size: 100%;
+		overflow: hidden;
+
+		&:empty {
+			display: none;
+		}
 	}
 
 	.unread-count {
