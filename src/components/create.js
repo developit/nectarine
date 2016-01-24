@@ -175,7 +175,7 @@ export default class Create extends Component {
 					<div class="inner">
 						<TextField class="text" multiline placeholder="Enter a message." value={text} onInput={this.linkState('text')} />
 
-						<div class="magic">
+						<div class="magic" show={gifs && gifs.length || null}>
 							<div class="inner">
 								{ gifs ? gifs.map( (p, i) => (
 									<img
@@ -187,7 +187,7 @@ export default class Create extends Component {
 							</div>
 						</div>
 
-						<div class="images">
+						<div class="images" show={images && images.length || null}>
 							<div class="inner">
 								{ images ? images.map( img => (
 									<img src={img.url} />

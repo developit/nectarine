@@ -499,6 +499,9 @@ a {
 
 
 .create.modal {
+	.content {
+		.scroller();
+	}
 
 	@media (min-width: 1025px) {
 		left: 50%;
@@ -573,12 +576,18 @@ a {
 		// height: 100%;
 		position: relative;
 		width: 100%;
+		margin: 5px 0;
 		height: 200px;
 		.scroller();
 		overflow-y: hidden;
 		white-space: nowrap;
 		// background: @background;
 		// z-index: 100;
+
+		display: none;
+		&[show] {
+			display: block;
+		}
 
 		& > .inner {
 			width: auto;
