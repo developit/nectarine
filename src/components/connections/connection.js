@@ -15,6 +15,10 @@ export default class Connection extends Component {
 		return read!==this.read;
 	}
 
+	componentWillReceiveProps({ id }) {
+		if (id!==this.props.id) this.read = null;
+	}
+
 	@bind
 	onClick(e) {
 		let t = e.target;
