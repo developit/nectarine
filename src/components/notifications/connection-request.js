@@ -39,8 +39,8 @@ export default class ConnectionRequest extends Component {
 				<div class="avatar" style={stream.avatarSrc ? `background-image: url(${stream.avatarSrc});` : null}  />
 				{ acted ? null : (
 					<button-bar>
-						<Button icon colored ripple onClick={this.deny}><Icon icon="clear" /></Button>
-						<Button icon accent ripple onClick={this.accept}><Icon icon="check" /></Button>
+						<Button class="deny" icon colored onClick={this.deny}><Icon icon="clear" /></Button>
+						<Button class="accept" icon colored onClick={this.accept}><Icon icon="check" /></Button>
 					</button-bar>
 				) }
 				<h4>{ stream.displayName }</h4>
