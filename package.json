@@ -21,8 +21,8 @@
     "material-design-lite": "^1.0.6",
     "neatime": "^1.0.0",
     "praline": "^0.3.1",
-    "preact": "^2.7.2",
-    "preact-router": "^1.1.0",
+    "preact": "^3.0.0",
+    "preact-router": "^1.2.3",
     "wildemitter": "^1.2.0"
   },
   "devDependencies": {
