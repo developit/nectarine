@@ -17,7 +17,7 @@ pubsub.on('track', url => {
 		url = url.url;
 	}
 	if (typeof url!=='string') return;
-	if (url.charAt(0)!=='/') url + `/${url}`;
+	if (url.charAt(0)!=='/') url = `/${url}`;
 	if (typeof ga==='function') {
 		ga('send', type, url);
 	}
