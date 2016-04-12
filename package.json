@@ -1,5 +1,5 @@
 {
-  "name": "peach-app",
+  "name": "nectarine",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -21,8 +21,8 @@
     "material-design-lite": "^1.0.6",
     "neatime": "^1.0.0",
     "praline": "^0.3.1",
-    "preact": "^3.1.0",
-    "preact-router": "^1.2.3",
+    "preact": "^4.6.0",
+    "preact-router": "^1.3.0",
     "wildemitter": "^1.2.0"
   },
   "devDependencies": {
