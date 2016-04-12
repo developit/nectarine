@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { bind } from 'decko';
 import { emit } from '../../pubsub';
 
-export default class Friends extends Component {
+export default class Friend extends Component {
 	@bind
 	goAuthor(e) {
 		let { id } = this.props;

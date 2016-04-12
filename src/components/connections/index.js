@@ -65,6 +65,20 @@ export class Connections extends Component {
 		return () => emit('go', { url });
 	}
 
+	@bind
+	handleRead(id) {
+		peach.markAsRead(id);
+
+		let { connections } = this.state;
+		for (let i=connections.length; i--; ) {
+			if (connections[i].id===id) {
+				connections[i].unreadPostCount = 0;
+				break;
+			}
+		}
+		this.setState({ connections });
+	}
+
 	@debounce
 	handleScroll() {
 		emit('update-visibility');
@@ -99,7 +113,7 @@ export class Connections extends Component {
 			<div class="explore view" onScroll={this.handleScroll}>
 				<div class="inner">
 					{ connections.map( connection => (
-						<Connection {...connection} meta={!this.explore} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
+						<Connection key={connection.id} {...connection} meta={!this.explore} onRead={this.handleRead} onClick={this.linkTo(`/profile/${encodeURIComponent(connection.id)}`)} />
 					)) }
 					{ !connections.length && loading ? <LoadingScreen overlay /> : null }
 				</div>

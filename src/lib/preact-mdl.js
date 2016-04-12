@@ -154,12 +154,12 @@ export class MaterialComponent extends Component {
 		}
 	}
 
-	componentWillUnmount() {
-		if (this.upgradedBase) {
-			mdl.downgradeElements(this.upgradedBase);
-			this.upgradedBase = null;
-		}
-	}
+	// componentWillUnmount() {
+	// 	if (this.upgradedBase) {
+	// 		mdl.downgradeElements(this.upgradedBase);
+	// 		this.upgradedBase = null;
+	// 	}
+	// }
 }
 
 

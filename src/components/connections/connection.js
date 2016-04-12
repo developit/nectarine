@@ -2,17 +2,11 @@ import { h, Component } from 'preact';
 import { Card, Button, Icon } from 'preact-mdl';
 import { bind } from 'decko';
 import Post from '../post';
-import peach from '../../peach';
 
 export default class Connection extends Component {
-	constructor() {
-		super();
-		this.read = null;
-	}
-
 	shouldComponentUpdate(props, { read }) {
 		for (let i in props) if (i!=='posts' && i!=='_fetched' && props[i]!==this.props[i]) return true;
-		return read!==this.read;
+		return false;
 	}
 
 	componentWillReceiveProps({ id }) {
@@ -33,17 +27,15 @@ export default class Connection extends Component {
 
 	@bind
 	markRead(e) {
-		peach.markAsRead(this.props.id);
-		this.setState({ read:true });
+		let { id, onRead } = this.props;
+		if (onRead) onRead(id);
 		if (e) e.stopPropagation();
 		return false;
 	}
 
-	render({ id, displayName, posts=[], unreadPostCount=0, avatarSrc, meta }, { read }) {
-		this.read = read;
-		//  key={key}
+	render({ id, displayName, posts=[], unreadPostCount=0, avatarSrc, meta }) {
 		return (
-			<Card shadow={2} read={read || null} class="centered stream-connection" onClick={this.onClick}>
+			<Card shadow={2} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
 					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
