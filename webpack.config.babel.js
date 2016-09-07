@@ -39,7 +39,7 @@ module.exports = {
 			{
 				test: /\.(less|css)$/,
 				exclude: /src\/components\//,
-				loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss!less?importLoaders=1&sourceMap')
+				loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss!less?sourceMap')
 			}
 		]
 	},
