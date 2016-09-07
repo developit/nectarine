@@ -159,7 +159,7 @@ export default class Post extends Component {
 		if (minimal) return (
 			<div class={'post type-'+type} minimal={minimal || null} has-avatar={!!author || null} is-own={isOwn || null}>
 				{ author ? (
-					<div class="avatar" onClick={this.goAuthor} style={`background-image: url(${avatar});`} />
+					<div class="avatar" onClick={this.goAuthor} style={avatar && `background-image: url(${avatar});`} />
 				) : null }
 				<div class="post-meta">
 					<span class="post-time">{ neatime(createdTime * 1000) }</span>

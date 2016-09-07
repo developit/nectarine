@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "NODE_ENV=dev webpack-dev-server -d --inline",
     "build": "NODE_ENV=production webpack -p && cp -r src/assets build/",
+    "prebuild": "rimraf build",
     "prestart": "npm run build -s",
-    "start": "http-server build",
+    "start": "http-server -p ${PORT:-8080} -c-1 build",
     "deploy-old": "gh-pages -d build",
     "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d $(cat CNAME)",
     "test": "eslint src"
@@ -26,7 +27,7 @@
     "wildemitter": "^1.2.0"
   },
   "devDependencies": {
-    "autoprefixer-loader": "^3.1.0",
+    "autoprefixer": "^6.4.1",
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.5",
@@ -43,6 +44,10 @@
     "html-webpack-plugin": "^2.22.0",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
+    "offline-plugin": "^3.4.2",
+    "postcss-loader": "^0.11.1",
+    "progress-bar-webpack-plugin": "^1.9.0",
+    "rimraf": "^2.5.4",
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.0",
     "surge": "^0.18.0",

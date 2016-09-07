@@ -76,7 +76,7 @@ export default class App extends Component {
 		try {
 			if (value===false) document.body.removeAttribute(key);
 			else document.body.setAttribute(key, value);
-		} catch(err) {}
+		} catch (err) {}
 	}
 
 	render({}, { pending, loggedin }) {

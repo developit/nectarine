@@ -61,7 +61,7 @@ function requestPermission() {
 				}
 			});
 		}
-	} catch(err) {}
+	} catch (err) {}
 }
 
 function allowed() {
@@ -101,5 +101,5 @@ export function notify(title, body, url) {
 			window.focus();
 			if (url) emit('go', url);
 		};
-	} catch(err) {}
+	} catch (err) {}
 }

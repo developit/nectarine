@@ -21,7 +21,7 @@ export default class Connection extends Component {
 				e.stopPropagation();
 				return;
 			}
-		} while( (t=t.parentNode) );
+		} while ((t=t.parentNode));
 		this.props.onClick(e);
 	}
 
@@ -37,7 +37,7 @@ export default class Connection extends Component {
 		return (
 			<Card shadow={2} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
-					<div class="avatar" style={`background-image: url(${avatarSrc});`} />
+					<div class="avatar" style={avatarSrc && `background-image: url(${avatarSrc});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
 					{ meta ? (
 						<div class="connection-meta">

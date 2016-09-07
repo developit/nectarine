@@ -20,7 +20,7 @@ export default class Comment extends Component {
 		let t = e.target;
 		do {
 			if (String(t.nodeName).toUpperCase()==='A' || String(t.className).match(/\bmdl-menu\b/)) return;
-		} while( (t=t.parentNode) );
+		} while ( (t=t.parentNode) );
 		this.props.onClick(this.props);
 		return e.stopPropagation(), false;
 	}

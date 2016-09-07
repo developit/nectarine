@@ -1,5 +1,15 @@
 import { h, render } from 'preact';
-import App from './components/app';
 import './style';
+require('offline-plugin/runtime').install();
 
-render(<App />, document.body);
+let root;
+function init() {
+	let App = require('./components/app').default;
+	root = render(<App />, document.body, root);
+}
+
+init();
+
+if (process.env.NODE_ENV==='development' && module.hot) {
+	module.hot.accept('./components/app', () => requestAnimationFrame(init));
+}
