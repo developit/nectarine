@@ -1,6 +1,6 @@
 export default function(canvas, callback, type='image/png', quality) {
 	if (typeof canvas.toBlob==='function') {
-		return canvas.toBlob(callbac, type, quality);
+		return canvas.toBlob(callback, type, quality);
 	}
 
 	let binStr = atob(canvas.toDataURL(type, quality).split(',')[1] ),
