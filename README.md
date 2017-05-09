@@ -1,5 +1,7 @@
 # :peach: [Nectarine.rocks](http://nectarine.rocks) :zap:
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/developit/nectarine.svg)](https://greenkeeper.io/)
+
 > A peach client for (mobile) web, styled a 'la Material Design.
 >
 > Built with [peach.cool](https://github.com/developit/peach.cool).
