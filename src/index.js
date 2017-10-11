@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import 'linkstate/polyfill';
 import 'material-design-lite/material.js';
 import './style';
 require('offline-plugin/runtime').install();

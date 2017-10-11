@@ -14,7 +14,7 @@ export default peach;
 
 let updateConnectionsTimer;
 peach.on('login', () => {
-	updateConnections();
+	setTimeout(updateConnections, 1);
 
 	clearInterval(updateConnectionsTimer);
 	updateConnectionsTimer = setInterval(updateConnections, 60000);
@@ -29,7 +29,7 @@ export function updateConnections() {
 	parallel([
 		peach.activity,
 		peach.connections
-	], (err, { activityItems=[] }={}, { connections, inboundFriendRequests, outboundFriendRequests }) => {
+	], (err, { activityItems=[] }={}, { connections, inboundFriendRequests, outboundFriendRequests }={}) => {
 		store.setState({ activityItems, connections, inboundFriendRequests, outboundFriendRequests });
 	});
 }

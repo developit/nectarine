@@ -19,38 +19,46 @@ module.exports = {
 	},
 
 	resolve: {
-		modulesDirectories: ['./src/lib', 'node_modules'],
-		extensions: ['', '.jsx', '.less', '.js', '.json']
+		modules: ['./src/lib', 'node_modules'],
+		extensions: ['.jsx', '.less', '.js', '.json']
 	},
 
 	module: {
-		preLoaders: [
-			{
-				exclude: /src\//,
-				loader: 'source-map'
-			}
-		],
+		// preLoaders: [
+		// 	{
+		// 		exclude: /src\//,
+		// 		loader: 'source-map'
+		// 	}
+		// ],
 		loaders: [
 			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loader: 'babel'
+				loader: 'babel-loader'
 			},
 			{
 				test: /\.(less|css)$/,
 				exclude: /src\/components\//,
-				loader: ExtractTextPlugin.extract('style', 'css?sourceMap!postcss!less?sourceMap')
+				loader: ExtractTextPlugin.extract({
+					fallback: 'style-loader',
+					use: [
+						{ loader: 'css-loader', options: { sourceMap: true } },
+						{ loader: 'postcss-loader', options: {
+							sourceMap: true,
+							plugins: [
+								autoprefixer({ browsers: 'last 2 versions, iOS >= 7' })
+							]
+						} },
+						{ loader: 'less-loader', options: { sourceMap: true } }
+					]
+				})
 			}
 		]
 	},
 
-	postcss: () => [
-		autoprefixer({ browsers: 'last 2 versions, iOS >= 7' })
-	],
-
 	plugins: ([
 		new ProgressBarPlugin(),
-		new webpack.NoErrorsPlugin(),
+		new webpack.NoEmitOnErrorsPlugin(),
 		new ExtractTextPlugin('style.[chunkhash].css', {
 			allChunks: false,
 			disable: process.env.NODE_ENV!=='production'
@@ -61,7 +69,8 @@ module.exports = {
 			'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
 		}),
 		new HtmlWebpackPlugin({
-			template: './index.html',
+			template: 'index.ejs',
+			filename: 'index.html',
 			inject: false,
 			minify: {
 				collapseWhitespace: true,
