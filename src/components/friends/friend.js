@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
 import { emit } from '../../pubsub';
+import optimisticHttps from 'optimistic-https';
 
 export default class Friend extends Component {
 	@bind
@@ -12,7 +13,7 @@ export default class Friend extends Component {
 	render({ avatarSrc, bio, displayName, name, unreadPostCount }) {
 		return (
 			<div class="friend" unread-count={unreadPostCount || null} onClick={this.goAuthor}>
-				<div class="avatar" style={avatarSrc ? `background-image: url('${avatarSrc}');` : null} />
+				<div class="avatar" style={avatarSrc ? `background-image: url('${optimisticHttps(avatarSrc)}');` : null} />
 				<h2>{displayName} <span class="unread-count">({ unreadPostCount || 0 })</span></h2>
 				<h4>@{name}</h4>
 				<footer>{ bio || null}</footer>

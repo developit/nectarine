@@ -6,6 +6,7 @@ import { on, off, emit } from '../pubsub';
 import Post from './post';
 import peach from '../peach';
 import parseMessage from 'parse-message';
+import optimisticHttps from 'optimistic-https';
 
 const EMPTY = {};
 
@@ -133,7 +134,7 @@ export default class Profile extends Component {
 			<div class="profile view view-scroll" onScroll={this.handleScroll}>
 				<div class="inner">
 					<header>
-						<div class="avatar" style={stream.avatarSrc ? `background-image: url(${stream.avatarSrc});` : null} />
+						<div class="avatar" style={stream.avatarSrc ? `background-image: url(${optimisticHttps(stream.avatarSrc)});` : null} />
 
 						<h4>@{ stream.name }</h4>
 						<h3>{ stream.displayName }</h3>

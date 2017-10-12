@@ -4,6 +4,7 @@ import { bind } from 'decko';
 import { renderer } from './renderers';
 import peach from '../../peach';
 import { emit } from '../../pubsub';
+import optimisticHttps from 'optimistic-https';
 
 export default class Comment extends Component {
 	constructor(props) {
@@ -89,7 +90,7 @@ export default class Comment extends Component {
 		return (
 			<div class="comment" onClick={this.handleClick}>
 				{ allowDelete ? this.renderMenu() : <span class="comment-menu-wrap" /> }
-				<div class="avatar" onClick={this.goAuthor} style={avatar ? `background-image: url(${avatar});` : null} />
+				<div class="avatar" onClick={this.goAuthor} style={avatar ? `background-image: url(${optimisticHttps(avatar)});` : null} />
 				{ renderer('text')({ text:body }) }
 				<author title={author.name}>{ author.displayName }</author>
 			</div>

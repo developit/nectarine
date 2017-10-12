@@ -6,6 +6,7 @@ import { emit } from '../../pubsub';
 import peach from '../../peach';
 import Comment from './comment';
 import { renderItem } from './renderers';
+import optimisticHttps from 'optimistic-https';
 
 
 const noBubble = e => {
@@ -159,7 +160,7 @@ export default class Post extends Component {
 		if (minimal) return (
 			<div class={'post type-'+type} minimal={minimal || null} has-avatar={!!author || null} is-own={isOwn || null}>
 				{ author ? (
-					<div class="avatar" onClick={this.goAuthor} style={avatar && `background-image: url(${avatar});`} />
+					<div class="avatar" onClick={this.goAuthor} style={avatar && `background-image: url(${optimisticHttps(avatar)});`} />
 				) : null }
 				<div class="post-meta">
 					<span class="post-time">{ neatime(createdTime * 1000) }</span>
@@ -172,7 +173,7 @@ export default class Post extends Component {
 
 		return (
 			<div class={'post type-'+type} has-avatar={!!author || null} is-own={isOwn || null}>
-				<div class="avatar" onClick={this.goAuthor} style={author ? `background-image: url(${avatar});` : null} />
+				<div class="avatar" onClick={this.goAuthor} style={author ? `background-image: url(${optimisticHttps(avatar)});` : null} />
 
 				<div class="post-meta">
 					<span class="post-time">{ neatime(createdTime * 1000) }</span>

@@ -5,6 +5,7 @@ import { bind } from 'decko';
 import { parallel } from 'praline';
 import peach from '../../peach';
 import chooseFiles from 'choose-files';
+import optimisticHttps from 'optimistic-https';
 
 export default class Settings extends Component {
 	componentDidMount() {
@@ -130,7 +131,7 @@ export default class Settings extends Component {
 
 						<form action="javascript:">
 							<h6>Avatar</h6>
-							<div class="avatar" onClick={this.changeAvatar} style={`background-image: url("${avatarSrc || '/assets/icon-300.png'}");`} />
+							<div class="avatar" onClick={this.changeAvatar} style={`background-image: url("${optimisticHttps(avatarSrc || '/assets/icon-300.png')}");`} />
 							<Button colored raised onClick={this.changeAvatar}>Change</Button>
 						</form>
 					</Card.Text>

@@ -3,6 +3,7 @@ import { Button, Icon } from 'preact-mdl';
 import { bind } from 'decko';
 import { emit } from '../../pubsub';
 import peach from '../../peach';
+import optimisticHttps from 'optimistic-https';
 
 export default class ConnectionRequest extends Component {
 	@bind
@@ -36,7 +37,7 @@ export default class ConnectionRequest extends Component {
 	render({ id, stream, onAct, acted=false, ...props }) {
 		return (
 			<div class="scroll-list-item" onClick={this.toProfile} style={acted ? 'opacity:0.5' : null} {...props}>
-				<div class="avatar" style={stream.avatarSrc ? `background-image: url(${stream.avatarSrc});` : null}  />
+				<div class="avatar" style={stream.avatarSrc ? `background-image: url(${optimisticHttps(stream.avatarSrc)});` : null}  />
 				{ acted ? null : (
 					<button-bar>
 						<Button class="deny" icon colored onClick={this.deny}><Icon icon="clear" /></Button>

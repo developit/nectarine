@@ -4,6 +4,7 @@ import parseMessageText from 'parse-message';
 import ImageViewer from './image-viewer';
 import VideoPlayer from './video-player';
 import MusicPlayer from './music-player';
+import optimisticHttps from 'optimistic-https';
 
 export function renderItem(item) {
 	let fn = renderer(item.type);
@@ -74,7 +75,7 @@ const RENDERERS = {
 		<div class="item-link">
 			<a href={url} target="_blank">{ title }</a>
 			<p>{ description }</p>
-			<img src={imageURL} />
+			<img src={optimisticHttps(imageURL)} />
 		</div>
 	),
 
@@ -84,7 +85,7 @@ const RENDERERS = {
 
 	location: ({ name, iconSrc, lat, long, ...props }) => (
 		<a href={`https://www.google.com/maps/place/${encodeURIComponent(name)}/@${encodeURIComponent(lat)},${encodeURIComponent(long)},17z/`} target="_blank" style="display:block;">
-			{ iconSrc ? <img src={iconSrc} width="26" height="26" style="float:left; background:#CCC; border-radius:50%;" /> : null }
+			{ iconSrc ? <img src={optimisticHttps(iconSrc)} width="26" height="26" style="float:left; background:#CCC; border-radius:50%;" /> : null }
 			<div style="overflow:hidden; padding:5px;">{ name }</div>
 		</a>
 	)

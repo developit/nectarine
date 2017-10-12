@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Card, Button, Icon } from 'preact-mdl';
 import { bind } from 'decko';
 import Post from '../post';
+import optimisticHttps from 'optimistic-https';
 
 export default class Connection extends Component {
 	shouldComponentUpdate(props, { read }) {
@@ -37,7 +38,7 @@ export default class Connection extends Component {
 		return (
 			<Card shadow={2} class="centered stream-connection" onClick={this.onClick}>
 				<Card.Title>
-					<div class="avatar" style={avatarSrc && `background-image: url(${avatarSrc});`} />
+					<div class="avatar" style={avatarSrc && `background-image: url(${optimisticHttps(avatarSrc)});`} />
 					<Card.TitleText>{ displayName } <span class="unread-count">({ unreadPostCount || 0 })</span></Card.TitleText>
 					{ meta ? (
 						<div class="connection-meta">
