@@ -1,4 +1,5 @@
 /* eslint-disable */
+import path from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -8,11 +9,11 @@ import autoprefixer from 'autoprefixer';
 
 
 module.exports = {
-	context: `${__dirname}/src`,
+	context: path.resolve(__dirname, 'src'),
 	entry: './index.js',
 
 	output: {
-		path: `${__dirname}/build`,
+		path: path.resolve(__dirname, 'build'),
 		publicPath: '/',
 		filename: 'bundle.[hash].js',
 		chunkFilename: '[name].[chunkhash].chunk.js'
@@ -83,12 +84,6 @@ module.exports = {
 			icon: '/assets/icon-300.png'
 		})
 	]).concat(process.env.NODE_ENV==='production' ? [
-		new webpack.optimize.DedupePlugin(),
-		new webpack.optimize.UglifyJsPlugin({
-			mangle: true,
-			compress: { warnings: false },
-			output: { comments:false }
-		}),
 		new OfflinePlugin({
 			relativePaths: false,
 			publicPath: '/',
