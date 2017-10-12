@@ -10,7 +10,7 @@
     "prestart": "npm run build -s",
     "start": "cross-var http-server -p ${PORT:-8080} -c-1 build",
     "deploy-old": "gh-pages -d build",
-    "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d https://nectarine.rocks",
+    "deploy": "npm run -s build && cp build/index.html build/200.html && surge -p build -d nectarine.rocks",
     "test": "eslint src"
   },
   "author": "Jason Miller <jason@developit.ca>",

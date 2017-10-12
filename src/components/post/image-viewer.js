@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { bind } from 'decko';
+import optimisticHttps from 'optimistic-https';
 
 // const IMG = [];
 //
@@ -50,6 +51,7 @@ export default class ImageViewer extends Component {
 	// }
 
 	render({ src }, { full }) {
+		src = optimisticHttps(src);
 		return <img src={src} style={{
 			display: 'block',
 			maxWidth: full?'auto':'',

@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { Icon } from 'preact-mdl';
 import { bind } from 'decko';
+import optimisticHttps from 'optimistic-https';
 
 export default class VideoPlayer extends Component {
 	shouldComponentUpdate({ src, posterSrc }, { play }) {
@@ -35,11 +36,11 @@ export default class VideoPlayer extends Component {
 		return (
 			<div class="video-player" optimized-visibility>
 				<div class="poster" onClick={this.play}>
-					<img src={posterSrc} />
+					<img src={optimisticHttps(posterSrc)} />
 					<Icon icon="play circle outline" />
 				</div>
 				{ play ? (
-					<video src={src} onPause={this.stop} onEnd={this.stop} autoplay autobuffer autostart />
+					<video src={optimisticHttps(src)} onPause={this.stop} onEnd={this.stop} autoplay autobuffer autostart />
 				) : null }
 			</div>
 		);
