@@ -1,6 +1,6 @@
-import Emitter from 'wildemitter';
+import emitter from 'mitt';
 import jan from 'jan';
-import Store from './store';
+import createStore from './store';
 
 const enc = encodeURIComponent;
 
@@ -12,9 +12,9 @@ const CACHE_LIFETIME = 60 * 1000;
 
 export default ({ url=URL, store, imgurKey, init=true }={}) => {
 	let api = jan.ns(url),
-		peach = new Emitter();
+		peach = emitter();
 
-	if (!store) store = new Store('peach-client');
+	if (!store) store = createStore('peach-client');
 	// if (!store.getState().streamCache) {
 	// 	store.setState({ streamCache:{} });
 	// }

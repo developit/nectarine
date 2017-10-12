@@ -1,16 +1,14 @@
-import Emitter from 'wildemitter';
+import emitter from 'mitt';
 
 /*global ga*/
 
-const pubsub = new Emitter();
+const pubsub = emitter();
 export default pubsub;
 
-let emit = ::pubsub.emit;
-let on = ::pubsub.on;
-let off = ::pubsub.off;
+let { emit, on, off } = pubsub;
 export { emit, on, off };
 
-pubsub.on('track', url => {
+on('track', url => {
 	let type = 'pageview';
 	if (url && typeof url==='object') {
 		type = url.type;

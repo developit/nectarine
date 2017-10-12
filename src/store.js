@@ -1,9 +1,9 @@
-import Store from 'store';
+import createStore from 'store';
 import { debounce } from 'decko';
 
 const STORE_ID = 'peach-client';
 
-const store = new Store();
+const store = createStore();
 
 // populate from localStorage
 try {

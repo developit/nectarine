@@ -1,24 +1,26 @@
-import Emitter from 'wildemitter';
+import emitter from 'mitt';
 
-export default class Store extends Emitter {
-	data = {};
+export default () => {
+	let self = emitter();
 
-	subscribe(fn) {
-		this.on('change', fn);
-	}
+	self.data = {};
 
-	unsubscribe(fn) {
-		this.off('change', fn);
-	}
+	self.subscribe = fn => {
+		self.on('change', fn);
+	};
 
-	getState() {
-		return this.data;
-	}
+	self.unsubscribe = fn => {
+		self.off('change', fn);
+	};
 
-	setState(state) {
+	self.getState = () => self.data;
+
+	self.setState = state => {
 		for (let i in state) if (state.hasOwnProperty(i)) {
-			this.data[i] = state[i];
+			self.data[i] = state[i];
 		}
-		this.emit('change', this.data);
-	}
-}
+		self.emit('change', self.data);
+	};
+
+	return self;
+};
