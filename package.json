@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=dev webpack-dev-server -d --inline",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server -d --inline",
     "build": "mkdirp build && cross-env NODE_ENV=production webpack -p && cp -r src/assets build/",
     "prebuild": "rimraf build",
     "prestart": "npm run build -s",

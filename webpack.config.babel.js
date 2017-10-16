@@ -88,7 +88,7 @@ module.exports = {
 			relativePaths: false,
 			publicPath: '/',
 			updateStrategy: 'all',
-			version: 'hash',
+			version: '[hash]',
 			preferOnline: true,
 			safeToUseOptionalCaches: true,
 			caches: 'all',
