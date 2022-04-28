@@ -3,7 +3,7 @@ import peachClient from 'peach-client';
 import { parallel } from 'praline';
 
 let peach = peachClient({
-	url: 'https://api.nectarine.rocks',		// Open-Source proxy, see: git.io/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
+	url: 'https://api.nectarine.rocks',		// Open-Source proxy, see: https://github.com/developit/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
 	imgurKey: '92e78601cb60df3',
 	store,
 	init: false
