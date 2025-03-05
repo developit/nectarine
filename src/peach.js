@@ -1,19 +1,19 @@
-import store from './store';
-import peachClient from 'peach-client';
-import { parallel } from 'praline';
+import store from "./store";
+import peachClient from "peach-client";
+import { parallel } from "praline";
 
 let peach = peachClient({
-	url: 'https://api.nectarine.rocks',		// Open-Source proxy, see: https://github.com/developit/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
-	imgurKey: '92e78601cb60df3',
+	url: "https://api.nectarine.rocks", // Open-Source proxy, see: https://github.com/developit/nectarine-api-proxy (it's 4 lines of code for extreme clarity)
+	imgurKey: "6c3032ceff14610",
 	store,
-	init: false
+	init: false,
 });
 
 window.peach = peach;
 export default peach;
 
 let updateConnectionsTimer;
-peach.on('login', () => {
+peach.on("login", () => {
 	setTimeout(updateConnections, 1);
 
 	clearInterval(updateConnectionsTimer);
@@ -23,14 +23,23 @@ peach.on('login', () => {
 let lastUpdate;
 export function updateConnections() {
 	let now = Date.now();
-	if (lastUpdate && (now-lastUpdate)<5000) return;
+	if (lastUpdate && now - lastUpdate < 5000) return;
 	lastUpdate = now;
 
-	parallel([
-		peach.activity,
-		peach.connections
-	], (err, { activityItems=[] }={}, { connections, inboundFriendRequests, outboundFriendRequests }={}) => {
-		store.setState({ activityItems, connections, inboundFriendRequests, outboundFriendRequests });
-	});
+	parallel(
+		[peach.activity, peach.connections],
+		(
+			err,
+			{ activityItems = [] } = {},
+			{ connections, inboundFriendRequests, outboundFriendRequests } = {},
+		) => {
+			store.setState({
+				activityItems,
+				connections,
+				inboundFriendRequests,
+				outboundFriendRequests,
+			});
+		},
+	);
 }
 peach.updateConnections = updateConnections;
