@@ -1,6 +1,7 @@
 import emitter from "mitt";
 import jan from "jan";
 import createStore from "./store";
+import { opaqueFetch } from "./opaque-fetch";
 
 const enc = encodeURIComponent;
 
@@ -327,22 +328,25 @@ export default ({ url = URL, store, imgurKey, init = true } = {}) => {
 		let body = new FormData();
 		body.append("type", "file");
 		body.append("image", image);
-		jan.post(
-			{
-				url: "https://api.imgur.com/3/image",
-				headers: { Authorization: `Client-ID ${imgurKey}` },
-				body,
-			},
-			(err, res, data) => {
+		opaqueFetch("https://api.imgur.com/3/image", {
+			method: "POST",
+			headers: { Authorization: `Client-ID ${imgurKey}` },
+			body,
+		}).then((r) => {
+			if (!r.ok) return callback("Error uploading image: " + r.statusText);
+			r.json().then((data) => {
 				data = (data && data.data) || data;
-				if (!err && !data) err = "Invalid response";
-				if (err) return callback(err);
-				let url = data.link || `https://i.imgur.com/${data.id}.png`;
-				if (typeof url === "string")
-					url = url.replace(/^http:\/\//g, "https://");
-				callback(null, { url, ...data });
-			},
-		);
+				if (data.link || data.id) {
+					let url = data.link || `https://i.imgur.com/${data.id}.png`;
+					if (typeof url === "string") {
+						url = url.replace(/^http:\/\//g, "https://");
+					}
+					callback(null, { url, ...data });
+				} else {
+					callback("Error uploading image: " + data.error);
+				}
+			});
+		});
 	};
 
 	// peach.setName = (name, callback) => api.post({ url:'/stream/name', body:{ name } }, cb(callback));
